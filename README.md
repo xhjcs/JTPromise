@@ -102,7 +102,7 @@ JTPromise *promise = [JTPromise promiseWithExecutor:^(void (^ _Nonnull resolve)(
         }
     }];
     
-    JTPromise *promise1 = [JTPromise promiseWithExecutor:^(void (^ _Nonnull resolve)(id _Nullable), void (^ _Nonnull reject)(NSError * _Nonnull)) {
+JTPromise *promise1 = [JTPromise promiseWithExecutor:^(void (^ _Nonnull resolve)(id _Nullable), void (^ _Nonnull reject)(NSError * _Nonnull)) {
         if (success) {
             resolve(@101);
         } else {
