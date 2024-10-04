@@ -1,0 +1,6 @@
+framework module JTPromise {
+  umbrella header "JTPromise-umbrella.h"
+
+  export *
+  module * { export * }
+}

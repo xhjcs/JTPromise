@@ -5,29 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "JTPromise",
-    platforms: [
-        .macOS(.v10_15),
-        .iOS(.v11)
-        ],
+    platforms: [.iOS(.v11), .macOS(.v10_15)],
     products: [
-        // Products define the executables and libraries a package produces, and make them visible to other packages.
-        .library(
-            name: "JTPromise",
-            targets: ["JTPromise"]),
-    ],
-    dependencies: [
-        // Dependencies declare other packages that this package depends on.
-        // .package(url: /* package url */, from: "1.0.0"),
+        .library(name: "JTPromise", targets: ["JTPromise"]),
     ],
     targets: [
-        .target(
-            name: "JTPromise",
-            dependencies: [],
-            path: "JTPromise"),
-        .testTarget(
-            name: "JTPromiseTests",
-            dependencies: ["JTPromise"],
-            path: "JTPromiseExample/JTPromiseExampleTests"),
+        .target(name: "JTPromise")
     ],
     swiftLanguageVersions: [.v5]
 )

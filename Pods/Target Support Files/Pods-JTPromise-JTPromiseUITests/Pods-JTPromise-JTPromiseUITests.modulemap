@@ -1,0 +1,6 @@
+framework module Pods_JTPromise_JTPromiseUITests {
+  umbrella header "Pods-JTPromise-JTPromiseUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

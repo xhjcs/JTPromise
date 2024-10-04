@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "JTPromise"
-  s.version      = "1.0.5"
+  s.version      = "1.0.6"
   s.summary      = "A lightweight, thread-safe Promise library for Swift and Objective-C, with a JavaScript-like API."
 
   s.description  = <<-DESC
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/xhjcs/JTPromise.git", :tag => "#{s.version}" }
 
-  s.source_files  = "JTPromise/**/*"
+  s.source_files  = "Sources/**/*"
 
   s.swift_version = '5.0'
 

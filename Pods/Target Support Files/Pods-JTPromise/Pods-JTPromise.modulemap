@@ -1,0 +1,6 @@
+framework module Pods_JTPromise {
+  umbrella header "Pods-JTPromise-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,16 @@
+PODS:
+  - JTPromise (1.0.6)
+
+DEPENDENCIES:
+  - JTPromise (from `./`)
+
+EXTERNAL SOURCES:
+  JTPromise:
+    :path: "./"
+
+SPEC CHECKSUMS:
+  JTPromise: be71988d59f0ba60c15ca07287493b3684c2171f
+
+PODFILE CHECKSUM: 98e3c550843d7ebc2dd95631408200c5134324d1
+
+COCOAPODS: 1.14.3
