@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/xhjcs/JTPromise.git", :tag => "#{s.version}" }
 
-  s.source_files  = "Sources/**/*"
+  s.source_files  = "Sources/#{s.name}/**/*"
 
   s.swift_version = '5.0'
 

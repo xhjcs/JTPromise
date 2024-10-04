@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "JTPromise", targets: ["JTPromise"]),
     ],
     targets: [
-        .target(name: "JTPromise", path: "Sources")
+        .target(name: "JTPromise")
     ],
     swiftLanguageVersions: [.v5]
 )

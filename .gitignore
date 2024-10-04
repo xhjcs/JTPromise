@@ -47,7 +47,7 @@ xcuserdata/
 # Carthage/Checkouts
 
 Carthage/Build
-JTPromiseExample/Pods/
+Pods/
 
 # fastlane
 #
