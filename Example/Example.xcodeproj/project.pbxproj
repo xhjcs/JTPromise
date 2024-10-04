@@ -20,12 +20,12 @@
 		D28D7F2B2CAFB2110098533E /* ExampleUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = D28D7F2A2CAFB2110098533E /* ExampleUITests.m */; };
 		D28D7F2D2CAFB2110098533E /* ExampleUITestsLaunchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D28D7F2C2CAFB2110098533E /* ExampleUITestsLaunchTests.m */; };
 		D2DA69F12CAFB31200D652F8 /* Playground.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA69F02CAFB31200D652F8 /* Playground.swift */; };
-		D2DA69F82CAFB3A600D652F8 /* PromiseAllTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA69F22CAFB3A600D652F8 /* PromiseAllTests.swift */; };
-		D2DA69F92CAFB3A600D652F8 /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA69F32CAFB3A600D652F8 /* PromiseTests.swift */; };
-		D2DA69FA2CAFB3A600D652F8 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA69F42CAFB3A600D652F8 /* Utils.swift */; };
-		D2DA69FB2CAFB3A600D652F8 /* PromiseAllSettledTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA69F52CAFB3A600D652F8 /* PromiseAllSettledTests.swift */; };
-		D2DA69FC2CAFB3A600D652F8 /* PromiseAnyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA69F62CAFB3A600D652F8 /* PromiseAnyTests.swift */; };
-		D2DA69FD2CAFB3A600D652F8 /* PromiseRaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA69F72CAFB3A600D652F8 /* PromiseRaceTests.swift */; };
+		D2DA6A982CAFBEB600D652F8 /* PromiseAnyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA6A922CAFBEB400D652F8 /* PromiseAnyTests.swift */; };
+		D2DA6A992CAFBEB600D652F8 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA6A932CAFBEB500D652F8 /* Utils.swift */; };
+		D2DA6A9A2CAFBEB600D652F8 /* PromiseAllSettledTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA6A942CAFBEB500D652F8 /* PromiseAllSettledTests.swift */; };
+		D2DA6A9B2CAFBEB600D652F8 /* PromiseAllTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA6A952CAFBEB500D652F8 /* PromiseAllTests.swift */; };
+		D2DA6A9C2CAFBEB600D652F8 /* PromiseRaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA6A962CAFBEB500D652F8 /* PromiseRaceTests.swift */; };
+		D2DA6A9D2CAFBEB600D652F8 /* PromiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DA6A972CAFBEB600D652F8 /* PromiseTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,12 +70,12 @@
 		D28D7F2C2CAFB2110098533E /* ExampleUITestsLaunchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleUITestsLaunchTests.m; sourceTree = "<group>"; };
 		D2DA69EF2CAFB31200D652F8 /* Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example-Bridging-Header.h"; sourceTree = "<group>"; };
 		D2DA69F02CAFB31200D652F8 /* Playground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playground.swift; sourceTree = "<group>"; };
-		D2DA69F22CAFB3A600D652F8 /* PromiseAllTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PromiseAllTests.swift; path = ../../Tests/PromiseAllTests.swift; sourceTree = "<group>"; };
-		D2DA69F32CAFB3A600D652F8 /* PromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PromiseTests.swift; path = ../../Tests/PromiseTests.swift; sourceTree = "<group>"; };
-		D2DA69F42CAFB3A600D652F8 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = ../../Tests/Utils.swift; sourceTree = "<group>"; };
-		D2DA69F52CAFB3A600D652F8 /* PromiseAllSettledTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PromiseAllSettledTests.swift; path = ../../Tests/PromiseAllSettledTests.swift; sourceTree = "<group>"; };
-		D2DA69F62CAFB3A600D652F8 /* PromiseAnyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PromiseAnyTests.swift; path = ../../Tests/PromiseAnyTests.swift; sourceTree = "<group>"; };
-		D2DA69F72CAFB3A600D652F8 /* PromiseRaceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PromiseRaceTests.swift; path = ../../Tests/PromiseRaceTests.swift; sourceTree = "<group>"; };
+		D2DA6A922CAFBEB400D652F8 /* PromiseAnyTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PromiseAnyTests.swift; path = ../../Tests/PromiseAnyTests.swift; sourceTree = "<group>"; };
+		D2DA6A932CAFBEB500D652F8 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = ../../Tests/Utils.swift; sourceTree = "<group>"; };
+		D2DA6A942CAFBEB500D652F8 /* PromiseAllSettledTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PromiseAllSettledTests.swift; path = ../../Tests/PromiseAllSettledTests.swift; sourceTree = "<group>"; };
+		D2DA6A952CAFBEB500D652F8 /* PromiseAllTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PromiseAllTests.swift; path = ../../Tests/PromiseAllTests.swift; sourceTree = "<group>"; };
+		D2DA6A962CAFBEB500D652F8 /* PromiseRaceTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PromiseRaceTests.swift; path = ../../Tests/PromiseRaceTests.swift; sourceTree = "<group>"; };
+		D2DA6A972CAFBEB600D652F8 /* PromiseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PromiseTests.swift; path = ../../Tests/PromiseTests.swift; sourceTree = "<group>"; };
 		EEEA16B428A1509D9BD9D946 /* Pods-Example-ExampleUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example-ExampleUITests.release.xcconfig"; path = "Target Support Files/Pods-Example-ExampleUITests/Pods-Example-ExampleUITests.release.xcconfig"; sourceTree = "<group>"; };
 		FC693322E093BABBAFA46347 /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
 		FDCBAE5C6DA55C2592E20040 /* Pods-ExampleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ExampleTests.release.xcconfig"; path = "Target Support Files/Pods-ExampleTests/Pods-ExampleTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -136,7 +136,7 @@
 			isa = PBXGroup;
 			children = (
 				D28D7F032CAFB20F0098533E /* Example */,
-				D28D7F1F2CAFB2110098533E /* ExampleTests */,
+				D2DA6A912CAFBE9000D652F8 /* ExampleTests */,
 				D28D7F292CAFB2110098533E /* ExampleUITests */,
 				D28D7F022CAFB20F0098533E /* Products */,
 				57607947ADDC3CE682CC52AC /* Pods */,
@@ -174,19 +174,6 @@
 			path = Example;
 			sourceTree = "<group>";
 		};
-		D28D7F1F2CAFB2110098533E /* ExampleTests */ = {
-			isa = PBXGroup;
-			children = (
-				D2DA69F52CAFB3A600D652F8 /* PromiseAllSettledTests.swift */,
-				D2DA69F22CAFB3A600D652F8 /* PromiseAllTests.swift */,
-				D2DA69F62CAFB3A600D652F8 /* PromiseAnyTests.swift */,
-				D2DA69F72CAFB3A600D652F8 /* PromiseRaceTests.swift */,
-				D2DA69F32CAFB3A600D652F8 /* PromiseTests.swift */,
-				D2DA69F42CAFB3A600D652F8 /* Utils.swift */,
-			);
-			path = ExampleTests;
-			sourceTree = "<group>";
-		};
 		D28D7F292CAFB2110098533E /* ExampleUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,6 +181,19 @@
 				D28D7F2C2CAFB2110098533E /* ExampleUITestsLaunchTests.m */,
 			);
 			path = ExampleUITests;
+			sourceTree = "<group>";
+		};
+		D2DA6A912CAFBE9000D652F8 /* ExampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				D2DA6A942CAFBEB500D652F8 /* PromiseAllSettledTests.swift */,
+				D2DA6A952CAFBEB500D652F8 /* PromiseAllTests.swift */,
+				D2DA6A922CAFBEB400D652F8 /* PromiseAnyTests.swift */,
+				D2DA6A962CAFBEB500D652F8 /* PromiseRaceTests.swift */,
+				D2DA6A972CAFBEB600D652F8 /* PromiseTests.swift */,
+				D2DA6A932CAFBEB500D652F8 /* Utils.swift */,
+			);
+			path = ExampleTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -466,12 +466,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D2DA69F82CAFB3A600D652F8 /* PromiseAllTests.swift in Sources */,
-				D2DA69FC2CAFB3A600D652F8 /* PromiseAnyTests.swift in Sources */,
-				D2DA69F92CAFB3A600D652F8 /* PromiseTests.swift in Sources */,
-				D2DA69FA2CAFB3A600D652F8 /* Utils.swift in Sources */,
-				D2DA69FD2CAFB3A600D652F8 /* PromiseRaceTests.swift in Sources */,
-				D2DA69FB2CAFB3A600D652F8 /* PromiseAllSettledTests.swift in Sources */,
+				D2DA6A9C2CAFBEB600D652F8 /* PromiseRaceTests.swift in Sources */,
+				D2DA6A9A2CAFBEB600D652F8 /* PromiseAllSettledTests.swift in Sources */,
+				D2DA6A982CAFBEB600D652F8 /* PromiseAnyTests.swift in Sources */,
+				D2DA6A9D2CAFBEB600D652F8 /* PromiseTests.swift in Sources */,
+				D2DA6A992CAFBEB600D652F8 /* Utils.swift in Sources */,
+				D2DA6A9B2CAFBEB600D652F8 /* PromiseAllTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
