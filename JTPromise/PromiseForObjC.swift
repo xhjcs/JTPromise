@@ -7,10 +7,29 @@
 
 import Foundation
 
+extension PromiseError: CustomNSError {
+    static var errorDomain: String {
+        return "com.xhjcs.Promise.Error"
+    }
+
+    var errorCode: Int {
+        return rawValue
+    }
+
+    var errorUserInfo: [String: Any] {
+        var userInfo = [String: Any]()
+        switch self {
+        case .emptyPromises:
+            userInfo[NSLocalizedDescriptionKey] = "The array of promises is empty."
+        }
+        return userInfo
+    }
+}
+
 @objc(JTPromiseSettledResult)
 public class __PromiseSettledResultForObjC__: NSObject {
-    @objc let result: AnyObject?
-    @objc let error: Error?
+    @objc public let result: AnyObject?
+    @objc public let error: Error?
 
     init(result: AnyObject?) {
         self.result = result

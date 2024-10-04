@@ -7,8 +7,8 @@
 
 import Foundation
 
-enum PromiseError: Error {
-    case emptyPromises
+enum PromiseError: Int, Error {
+    case emptyPromises = 1001
 }
 
 final class PromiseLock {
