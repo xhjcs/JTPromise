@@ -68,13 +68,14 @@ public final class __PromiseForObjC__: NSObject {
     }
 
     private func _then(_ handler: @escaping (_ value: AnyObject?) -> AnyObject?) -> __PromiseForObjC__ {
-        return __PromiseForObjC__(promise: promise.then { value in
+        let swiftPromise = promise.then { value in
             let nextValue = handler(value)
             if let nextPromise = nextValue as? __PromiseForObjC__ {
                 return nextPromise.promise
             }
             return Promise(resolve: nextValue)
-        })
+        }
+        return __PromiseForObjC__(promise: swiftPromise)
     }
 
     @discardableResult
@@ -83,13 +84,14 @@ public final class __PromiseForObjC__: NSObject {
     }
 
     private func _catch(_ handler: @escaping (_ error: Error) -> AnyObject?) -> __PromiseForObjC__ {
-        return __PromiseForObjC__(promise: promise.catch { error -> Promise<AnyObject?> in
+        let swiftPromise = promise.catch { error -> Promise<AnyObject?> in
             let nextValue = handler(error)
             if let nextPromise = nextValue as? __PromiseForObjC__ {
                 return nextPromise.promise
             }
             return Promise(resolve: nextValue)
-        })
+        }
+        return __PromiseForObjC__(promise: swiftPromise)
     }
 
     @objc public func finally() -> (_ handler: @escaping () -> Void) -> Void {

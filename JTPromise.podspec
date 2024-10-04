@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "JTPromise"
-  s.version      = "1.0.7"
+  s.version      = "1.0.8"
   s.summary      = "A lightweight, thread-safe Promise library for Swift and Objective-C, with a JavaScript-like API."
 
   s.description  = <<-DESC
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
 
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
-  s.author             = { "xinghanjie" => "xinghanjie@gmail.com" }
+  s.author       = { "xinghanjie" => "xinghanjie@gmail.com" }
 
   s.ios.deployment_target = "11.0"
   s.osx.deployment_target = "10.15"
