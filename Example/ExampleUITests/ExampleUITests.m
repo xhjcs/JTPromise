@@ -1,17 +1,17 @@
 //
-//  JTPromiseUITests.m
-//  JTPromiseUITests
+//  ExampleUITests.m
+//  ExampleUITests
 //
 //  Created by xinghanjie on 2024/10/4.
 //
 
 #import <XCTest/XCTest.h>
 
-@interface JTPromiseUITests : XCTestCase
+@interface ExampleUITests : XCTestCase
 
 @end
 
-@implementation JTPromiseUITests
+@implementation ExampleUITests
 
 - (void)setUp {
     // Put setup code here. This method is called before the invocation of each test method in the class.

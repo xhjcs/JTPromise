@@ -1,20 +1,20 @@
 # Uncomment the next line to define a global platform for your project
- platform :ios, '11.0'
+platform :ios, '11.0'
 
-target 'JTPromise' do
+target 'Example' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
-  # Pods for JTPromise
-  pod 'JTPromise', :path => './'
+  # Pods for Example
+  pod 'JTPromise', :path => '../'
 
-  target 'JTPromiseTests' do
+  target 'ExampleTests' do
     inherit! :search_paths
     # Pods for testing
-    pod 'JTPromise', :path => './'
+    pod 'JTPromise', :path => '../'
   end
 
-  target 'JTPromiseUITests' do
+  target 'ExampleUITests' do
     # Pods for testing
   end
 

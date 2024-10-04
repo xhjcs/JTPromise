@@ -17,10 +17,10 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D20EA4112CAF8AE500CA071E"
-               BuildableName = "JTPromiseTests.xctest"
-               BlueprintName = "JTPromiseTests"
-               ReferencedContainer = "container:JTPromise.xcodeproj">
+               BlueprintIdentifier = "D28D7F1B2CAFB2110098533E"
+               BuildableName = "ExampleTests.xctest"
+               BlueprintName = "ExampleTests"
+               ReferencedContainer = "container:Example.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

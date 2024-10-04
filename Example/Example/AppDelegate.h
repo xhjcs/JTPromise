@@ -1,6 +1,6 @@
 //
 //  AppDelegate.h
-//  JTPromise
+//  Example
 //
 //  Created by xinghanjie on 2024/10/4.
 //

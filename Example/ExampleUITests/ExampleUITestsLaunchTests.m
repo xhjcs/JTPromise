@@ -1,17 +1,17 @@
 //
-//  JTPromiseUITestsLaunchTests.m
-//  JTPromiseUITests
+//  ExampleUITestsLaunchTests.m
+//  ExampleUITests
 //
 //  Created by xinghanjie on 2024/10/4.
 //
 
 #import <XCTest/XCTest.h>
 
-@interface JTPromiseUITestsLaunchTests : XCTestCase
+@interface ExampleUITestsLaunchTests : XCTestCase
 
 @end
 
-@implementation JTPromiseUITestsLaunchTests
+@implementation ExampleUITestsLaunchTests
 
 + (BOOL)runsForEachTargetApplicationUIConfiguration {
     return YES;
