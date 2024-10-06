@@ -63,28 +63,14 @@ public final class Promise<Value> {
     @discardableResult
     public func then(_ handler: @escaping (_ value: Value) throws -> Void) -> Promise<Value?> {
         return _then { value in
-            Promise<Value?> { resolve, reject in
-                do {
-                    try handler(value)
-                    resolve(nil)
-                } catch {
-                    reject(error)
-                }
-            }
+            try handler(value)
+            return Promise<Value?>(resolve: nil)
         }
     }
 
     @discardableResult
     public func then<NewValue>(_ handler: @escaping (_ value: Value) throws -> NewValue) -> Promise<NewValue> {
-        return _then { value in
-            Promise<NewValue> { resolve, reject in
-                do {
-                    resolve(try handler(value))
-                } catch {
-                    reject(error)
-                }
-            }
-        }
+        return _then { Promise<NewValue>(resolve: try handler($0)) }
     }
 
     @discardableResult
@@ -92,7 +78,6 @@ public final class Promise<Value> {
         _then(handler)
     }
 
-    @discardableResult
     private func _then<NewValue>(_ handler: @escaping (_ value: Value) throws -> Promise<NewValue>) -> Promise<NewValue> {
         lock.lock()
         let currentState = state
@@ -158,7 +143,6 @@ public final class Promise<Value> {
         return _catch(handler)
     }
 
-    @discardableResult
     private func _catch(_ handler: @escaping (_ error: Error) -> Promise<Value>) -> Promise<Value> {
         lock.lock()
         let currentState = state
