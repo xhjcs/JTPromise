@@ -112,8 +112,9 @@ public extension Promise {
             var resultE: E?
             var resultF: F?
 
-            func handleResult() {
+            func handleResult(handler: () -> Void) {
                 lock.lock()
+                handler()
                 if let resultA = resultA,
                    let resultB = resultB,
                    let resultC = resultC,
@@ -134,34 +135,40 @@ public extension Promise {
                 }
             }
 
-            promiseA.then {
-                resultA = $0
-                handleResult()
+            promiseA.then { value in
+                handleResult {
+                    resultA = value
+                }
             }.catch(reject)
 
-            promiseB.then {
-                resultB = $0
-                handleResult()
+            promiseB.then { value in
+                handleResult {
+                    resultB = value
+                }
             }.catch(reject)
 
-            promiseC.then {
-                resultC = $0
-                handleResult()
+            promiseC.then { value in
+                handleResult {
+                    resultC = value
+                }
             }.catch(reject)
 
-            promiseD.then {
-                resultD = $0
-                handleResult()
+            promiseD.then { value in
+                handleResult {
+                    resultD = value
+                }
             }.catch(reject)
 
-            promiseE.then {
-                resultE = $0
-                handleResult()
+            promiseE.then { value in
+                handleResult {
+                    resultE = value
+                }
             }.catch(reject)
 
-            promiseF.then {
-                resultF = $0
-                handleResult()
+            promiseF.then { value in
+                handleResult {
+                    resultF = value
+                }
             }.catch(reject)
         }
     }

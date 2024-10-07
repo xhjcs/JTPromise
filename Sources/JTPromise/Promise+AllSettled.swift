@@ -158,8 +158,9 @@ public extension Promise {
             var resultE: PromiseSettledResult<E>?
             var resultF: PromiseSettledResult<F>?
 
-            func handleFinally() {
+            func handleResult(handler: () -> Void) {
                 lock.lock()
+                handler()
                 if let resultA = resultA,
                    let resultB = resultB,
                    let resultC = resultC,
@@ -181,34 +182,76 @@ public extension Promise {
             }
 
             promiseA
-                .then { resultA = PromiseSettledResult.fulfilled($0) }
-                .catch { resultA = PromiseSettledResult.rejected($0) }
-                .finally(handleFinally)
+                .then { value in
+                    handleResult {
+                        resultA = PromiseSettledResult.fulfilled(value)
+                    }
+                }
+                .catch { error in
+                    handleResult {
+                        resultA = PromiseSettledResult.rejected(error)
+                    }
+                }
 
             promiseB
-                .then { resultB = PromiseSettledResult.fulfilled($0) }
-                .catch { resultB = PromiseSettledResult.rejected($0) }
-                .finally(handleFinally)
+                .then { value in
+                    handleResult {
+                        resultB = PromiseSettledResult.fulfilled(value)
+                    }
+                }
+                .catch { error in
+                    handleResult {
+                        resultB = PromiseSettledResult.rejected(error)
+                    }
+                }
 
             promiseC
-                .then { resultC = PromiseSettledResult.fulfilled($0) }
-                .catch { resultC = PromiseSettledResult.rejected($0) }
-                .finally(handleFinally)
+                .then { value in
+                    handleResult {
+                        resultC = PromiseSettledResult.fulfilled(value)
+                    }
+                }
+                .catch { error in
+                    handleResult {
+                        resultC = PromiseSettledResult.rejected(error)
+                    }
+                }
 
             promiseD
-                .then { resultD = PromiseSettledResult.fulfilled($0) }
-                .catch { resultD = PromiseSettledResult.rejected($0) }
-                .finally(handleFinally)
+                .then { value in
+                    handleResult {
+                        resultD = PromiseSettledResult.fulfilled(value)
+                    }
+                }
+                .catch { error in
+                    handleResult {
+                        resultD = PromiseSettledResult.rejected(error)
+                    }
+                }
 
             promiseE
-                .then { resultE = PromiseSettledResult.fulfilled($0) }
-                .catch { resultE = PromiseSettledResult.rejected($0) }
-                .finally(handleFinally)
+                .then { value in
+                    handleResult {
+                        resultE = PromiseSettledResult.fulfilled(value)
+                    }
+                }
+                .catch { error in
+                    handleResult {
+                        resultE = PromiseSettledResult.rejected(error)
+                    }
+                }
 
             promiseF
-                .then { resultF = PromiseSettledResult.fulfilled($0) }
-                .catch { resultF = PromiseSettledResult.rejected($0) }
-                .finally(handleFinally)
+                .then { value in
+                    handleResult {
+                        resultF = PromiseSettledResult.fulfilled(value)
+                    }
+                }
+                .catch { error in
+                    handleResult {
+                        resultF = PromiseSettledResult.rejected(error)
+                    }
+                }
         }
     }
 }
