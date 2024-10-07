@@ -80,13 +80,12 @@ public final class Promise<Value> {
 
     private func _then<NewValue>(_ handler: @escaping (_ value: Value) throws -> Promise<NewValue>) -> Promise<NewValue> {
         lock.lock()
-        let currentState = state
-        lock.unlock()
-
-        switch currentState {
+        switch state {
         case .pending:
+            defer {
+                lock.unlock()
+            }
             return Promise<NewValue> { resolve, reject in
-                self.lock.lock()
                 self.fulfillHandlers.append {
                     do {
                         try handler($0).then(resolve).catch(reject)
@@ -95,15 +94,16 @@ public final class Promise<Value> {
                     }
                 }
                 self.rejectHandlers.append(reject)
-                self.lock.unlock()
             }
         case let .fulfilled(value):
+            lock.unlock()
             do {
                 return try handler(value)
             } catch {
                 return Promise<NewValue>(reject: error)
             }
         case let .rejected(error):
+            lock.unlock()
             return Promise<NewValue>(reject: error)
         }
     }
@@ -111,23 +111,23 @@ public final class Promise<Value> {
     @discardableResult
     public func `catch`(_ handler: @escaping (_ error: Error) -> Void) -> Promise<Value?> {
         lock.lock()
-        let currentState = state
-        lock.unlock()
-
-        switch currentState {
+        switch state {
         case .pending:
+            defer {
+                lock.unlock()
+            }
             return Promise<Value?> { (resolve: @escaping (Value?) -> Void, _: @escaping (Error) -> Void) in
-                self.lock.lock()
                 self.fulfillHandlers.append(resolve)
                 self.rejectHandlers.append {
                     handler($0)
                     resolve(nil)
                 }
-                self.lock.unlock()
             }
         case let .fulfilled(value):
+            lock.unlock()
             return Promise<Value?>(resolve: value)
         case let .rejected(error):
+            lock.unlock()
             handler(error)
             return Promise<Value?>(resolve: nil)
         }
@@ -145,37 +145,34 @@ public final class Promise<Value> {
 
     private func _catch(_ handler: @escaping (_ error: Error) -> Promise<Value>) -> Promise<Value> {
         lock.lock()
-        let currentState = state
-        lock.unlock()
-
-        switch currentState {
+        switch state {
         case .pending:
+            defer {
+                lock.unlock()
+            }
             return Promise<Value> { (resolve: @escaping (Value) -> Void, reject: @escaping (Error) -> Void) in
-                self.lock.lock()
                 self.fulfillHandlers.append(resolve)
                 self.rejectHandlers.append { handler($0).then(resolve).catch(reject) }
-                self.lock.unlock()
             }
         case let .fulfilled(value):
+            lock.unlock()
             return Promise(resolve: value)
         case let .rejected(error):
+            lock.unlock()
             return handler(error)
         }
     }
 
     public func finally(_ handler: @escaping () -> Void) {
         lock.lock()
-        let currentState = state
-        lock.unlock()
-
-        switch currentState {
-        case .fulfilled, .rejected:
-            handler()
+        switch state {
         case .pending:
-            lock.lock()
             fulfillHandlers.append { _ in handler() }
             rejectHandlers.append { _ in handler() }
             lock.unlock()
+        case .fulfilled, .rejected:
+            lock.unlock()
+            handler()
         }
     }
 }
