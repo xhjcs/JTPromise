@@ -365,112 +365,140 @@ final class PromiseAllSettledTests: XCTestCase {
     }
 
     func testAllSettledWithMixedPromisesThenCatchFinally() {
-        let expectation = PromiseExpectation(description: "All promises should invoke their respective then, catch and finally")
-        let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
+        for _ in 0..<1000 {
+            let expectation = PromiseExpectation(description: "All promises should invoke their respective then, catch and finally")
+            let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
 
-        // 创建六个 Promise，每个都在不同线程中调用 resolve 或 reject，并验证 then、catch、finally 的调用情况。
-        var thenCalledCount = 0
-        var catchCalledCount = 0
-        var finallyCalledCount = 0
+            // 创建六个 Promise，每个都在不同线程中调用 resolve 或 reject，并验证 then、catch、finally 的调用情况。
+            var thenCalledCount = 0
+            var catchCalledCount = 0
+            var finallyCalledCount = 0
 
-        let promiseA = Promise<Int> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve(1)
+            let promiseA = Promise<Int> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve(1)
+                }
             }
-        }
 
-        let promiseB = Promise<String> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve("B")
+            let promiseB = Promise<String> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve("B")
+                }
             }
-        }
 
-        let promiseC = Promise<Bool> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve(true)
+            let promiseC = Promise<Bool> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve(true)
+                }
             }
-        }
 
-        let promiseD = Promise<Double> { _, reject in
-            DispatchQueue.global().async {
-                reject(TestError.testFailed)
+            let promiseD = Promise<Double> { _, reject in
+                DispatchQueue.global().async {
+                    reject(TestError.testFailed)
+                }
             }
-        }
 
-        let promiseE = Promise<[String]> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve(["E"])
+            let promiseE = Promise<[String]> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve(["E"])
+                }
             }
-        }
 
-        let promiseF = Promise<[Int: String]> { _, reject in
-            DispatchQueue.global().async {
-                reject(TestError.testFailed)
+            let promiseF = Promise<[Int: String]> { _, reject in
+                DispatchQueue.global().async {
+                    reject(TestError.testFailed)
+                }
             }
+            
+            let lock = PromiseLock()
+
+            promiseA.then { _ in
+                lock.lock()
+                thenCalledCount += 1
+                lock.unlock()
+            }.catch { _ in
+                XCTFail("Promise A should not be rejected")
+            }.finally {
+                lock.lock()
+                finallyCalledCount += 1
+                lock.unlock()
+            }
+
+            promiseB.then { _ in
+                lock.lock()
+                thenCalledCount += 1
+                lock.unlock()
+            }.catch { _ in
+                XCTFail("Promise B should not be rejected")
+            }.finally {
+                lock.lock()
+                finallyCalledCount += 1
+                lock.unlock()
+            }
+
+            promiseC.then { _ in
+                lock.lock()
+                thenCalledCount += 1
+                lock.unlock()
+            }.catch { _ in
+                XCTFail("Promise C should not be rejected")
+            }.finally {
+                lock.lock()
+                finallyCalledCount += 1
+                lock.unlock()
+            }
+
+            promiseD.then { _ in
+                XCTFail("Promise D should be rejected")
+            }.catch { _ -> Void in
+                lock.lock()
+                catchCalledCount += 1
+                lock.unlock()
+            }.finally {
+                lock.lock()
+                finallyCalledCount += 1
+                lock.unlock()
+            }
+
+            promiseE.then { _ in
+                lock.lock()
+                thenCalledCount += 1
+                lock.unlock()
+            }.catch { _ in
+                XCTFail("Promise E should not be rejected")
+            }.finally {
+                lock.lock()
+                finallyCalledCount += 1
+                lock.unlock()
+            }
+
+            promiseF.then { _ in
+                XCTFail("Promise F should be rejected")
+            }.catch { _ -> Void in
+                lock.lock()
+                catchCalledCount += 1
+                lock.unlock()
+            }.finally {
+                lock.lock()
+                finallyCalledCount += 1
+                lock.unlock()
+            }
+
+            let allSettledPromise = Promise<(Int, String, Bool, Double, [String], [Int: String])>.allSettled(promiseA, promiseB, promiseC, promiseD, promiseE, promiseF)
+
+            allSettledPromise.then { _ in
+                XCTAssertEqual(thenCalledCount, 4, "4 promises should fulfill")
+                XCTAssertEqual(catchCalledCount, 2, "2 promises should reject")
+                XCTAssertEqual(finallyCalledCount, 6, "finally should be called for each promise")
+
+                expectation.fulfill()
+            }.catch { error in
+                XCTFail("Promise.allSettled should not reject, but caught error: \(error)")
+            }.finally {
+                finallyExpectation.fulfill()
+            }
+
+            wait(for: [expectation, finallyExpectation], timeout: 5.0)
         }
-
-        promiseA.then { _ in
-            thenCalledCount += 1
-        }.catch { _ in
-            XCTFail("Promise A should not be rejected")
-        }.finally {
-            finallyCalledCount += 1
-        }
-
-        promiseB.then { _ in
-            thenCalledCount += 1
-        }.catch { _ in
-            XCTFail("Promise B should not be rejected")
-        }.finally {
-            finallyCalledCount += 1
-        }
-
-        promiseC.then { _ in
-            thenCalledCount += 1
-        }.catch { _ in
-            XCTFail("Promise C should not be rejected")
-        }.finally {
-            finallyCalledCount += 1
-        }
-
-        promiseD.then { _ in
-            XCTFail("Promise D should be rejected")
-        }.catch { _ in
-            catchCalledCount += 1
-        }.finally {
-            finallyCalledCount += 1
-        }
-
-        promiseE.then { _ in
-            thenCalledCount += 1
-        }.catch { _ in
-            XCTFail("Promise E should not be rejected")
-        }.finally {
-            finallyCalledCount += 1
-        }
-
-        promiseF.then { _ in
-            XCTFail("Promise F should be rejected")
-        }.catch { _ in
-            catchCalledCount += 1
-        }.finally {
-            finallyCalledCount += 1
-        }
-
-        let allSettledPromise = Promise<(Int, String, Bool, Double, [String], [Int: String])>.allSettled(promiseA, promiseB, promiseC, promiseD, promiseE, promiseF)
-
-        allSettledPromise.then { _ in
-            XCTAssertEqual(thenCalledCount, 4, "4 promises should fulfill")
-            XCTAssertEqual(catchCalledCount, 2, "2 promises should reject")
-            XCTAssertEqual(finallyCalledCount, 6, "finally should be called for each promise")
-
-            expectation.fulfill()
-        }.catch { error in
-            XCTFail("Promise.allSettled should not reject, but caught error: \(error)")
-        }.finally {
-            finallyExpectation.fulfill()
-        }
-
-        wait(for: [expectation, finallyExpectation], timeout: 5.0)
     }
 }
