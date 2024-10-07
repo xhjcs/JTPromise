@@ -392,6 +392,87 @@ final class PromiseAllTests: XCTestCase {
 
         wait(for: [expectation1, expectation2, finallyExpectation1, finallyExpectation2], timeout: 2.0)
     }
+    
+    func testAllPromisesThreadSafe() {
+        for _ in 0..<100 {
+            var promises = [Promise<Int>]()
+            promises.append(Promise { resolve, reject in
+                DispatchQueue.global().async {
+                    resolve(10)
+                }
+            })
+            promises.append(Promise { resolve, reject in
+                DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                    resolve(101)
+                }
+            })
+            promises.append(Promise { resolve, reject in
+                DispatchQueue.global().async {
+                    reject(TestError.testFailed)
+                }
+            })
+            promises.append(Promise { resolve, reject in
+                DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                    reject(TestError.testFailed)
+                }
+            })
+            
+            let catchExpectation = PromiseExpectation(description: "catchExpectation")
+            let finallyExpectation = PromiseExpectation(description: "finallyExpectation")
+            Promise.all(promises)
+                .then { value in
+                    XCTFail()
+                }
+                .catch { error in
+                    catchExpectation.fulfill()
+                }
+                .finally {
+                    finallyExpectation.fulfill()
+                }
+            wait(for: [catchExpectation, finallyExpectation])
+        }
+    }
+    
+    func testAllPromisesSuccessThreadSafe() {
+        for _ in 0..<100 {
+            var promises = [Promise<Int>]()
+            promises.append(Promise { resolve, reject in
+                DispatchQueue.global().async {
+                    resolve(10)
+                }
+            })
+            promises.append(Promise { resolve, reject in
+                DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                    resolve(101)
+                }
+            })
+            promises.append(Promise { resolve, reject in
+                DispatchQueue.global().async {
+                    resolve(102)
+                }
+            })
+            promises.append(Promise { resolve, reject in
+                DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                    resolve(103)
+                }
+            })
+            
+            let thenExpectation = PromiseExpectation(description: "thenExpectation")
+            let finallyExpectation = PromiseExpectation(description: "finallyExpectation")
+            Promise.all(promises)
+                .then { value in
+                    XCTAssertEqual(value, [10, 101, 102, 103])
+                    thenExpectation.fulfill()
+                }
+                .catch { error in
+                    XCTFail()
+                }
+                .finally {
+                    finallyExpectation.fulfill()
+                }
+            wait(for: [thenExpectation, finallyExpectation])
+        }
+    }
 
     // MARK: - 测试所有 Promise 都在不同线程中调用 resolve 时的行为
 
@@ -502,124 +583,128 @@ final class PromiseAllTests: XCTestCase {
     // MARK: - 测试六个 Promise 都在不同线程中调用 resolve 时的行为
 
     func testAllSixPromisesFulfilledConcurrently() {
-        let expectation = PromiseExpectation(description: "All six promises fulfilled concurrently")
-        let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
+        for _ in 0..<100 {
+            let expectation = PromiseExpectation(description: "All six promises fulfilled concurrently")
+            let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
 
-        // 创建六个 Promise，每个都在不同线程中调用 resolve。
-        let promiseA = Promise<Int> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve(1)
+            // 创建六个 Promise，每个都在不同线程中调用 resolve。
+            let promiseA = Promise<Int> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve(1)
+                }
             }
-        }
 
-        let promiseB = Promise<String> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve("B")
+            let promiseB = Promise<String> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve("B")
+                }
             }
-        }
 
-        let promiseC = Promise<Bool> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve(true)
+            let promiseC = Promise<Bool> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve(true)
+                }
             }
-        }
 
-        let promiseD = Promise<Double> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve(4.0)
+            let promiseD = Promise<Double> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve(4.0)
+                }
             }
-        }
 
-        let promiseE = Promise<[String]> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve(["E"])
+            let promiseE = Promise<[String]> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve(["E"])
+                }
             }
-        }
 
-        let promiseF = Promise<[Int: String]> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve([1: "F"])
+            let promiseF = Promise<[Int: String]> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve([1: "F"])
+                }
             }
+
+            let allPromise = Promise<(Int, String, Bool, Double, [String], [Int: String])>.all(promiseA, promiseB, promiseC, promiseD, promiseE, promiseF)
+
+            allPromise.then { result in
+                let (valueA, valueB, valueC, valueD, valueE, valueF) = result
+                XCTAssertEqual(valueA, 1)
+                XCTAssertEqual(valueB, "B")
+                XCTAssertEqual(valueC, true)
+                XCTAssertEqual(valueD, 4.0)
+                XCTAssertEqual(valueE, ["E"])
+                XCTAssertEqual(valueF, [1: "F"])
+                expectation.fulfill()
+            }.catch { error in
+                XCTFail("All promises should fulfill successfully, but caught an error: \(error)")
+            }.finally {
+                finallyExpectation.fulfill()
+            }
+
+            wait(for: [expectation, finallyExpectation], timeout: 5.0)
         }
-
-        let allPromise = Promise<(Int, String, Bool, Double, [String], [Int: String])>.all(promiseA, promiseB, promiseC, promiseD, promiseE, promiseF)
-
-        allPromise.then { result in
-            let (valueA, valueB, valueC, valueD, valueE, valueF) = result
-            XCTAssertEqual(valueA, 1)
-            XCTAssertEqual(valueB, "B")
-            XCTAssertEqual(valueC, true)
-            XCTAssertEqual(valueD, 4.0)
-            XCTAssertEqual(valueE, ["E"])
-            XCTAssertEqual(valueF, [1: "F"])
-            expectation.fulfill()
-        }.catch { error in
-            XCTFail("All promises should fulfill successfully, but caught an error: \(error)")
-        }.finally {
-            finallyExpectation.fulfill()
-        }
-
-        wait(for: [expectation, finallyExpectation], timeout: 5.0)
     }
 
     // MARK: - 测试六个 Promise 中任意一个在不同线程中调用 reject 时的行为
 
     func testAllSixPromisesRejectedConcurrently() {
-        let expectation = PromiseExpectation(description: "One of six promises rejected concurrently")
-        let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
+        for _ in 0..<100 {
+            let expectation = PromiseExpectation(description: "One of six promises rejected concurrently")
+            let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
 
-        // 创建六个 Promise，其中一个会在不同线程中调用 reject。
-        let promiseA = Promise<Int> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve(1)
+            // 创建六个 Promise，其中一个会在不同线程中调用 reject。
+            let promiseA = Promise<Int> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve(1)
+                }
             }
-        }
 
-        let promiseB = Promise<String> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve("B")
+            let promiseB = Promise<String> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve("B")
+                }
             }
-        }
 
-        let promiseC = Promise<Bool> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve(true)
+            let promiseC = Promise<Bool> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve(true)
+                }
             }
-        }
 
-        let promiseD = Promise<Double> { _, reject in
-            DispatchQueue.global().async {
-                reject(TestError.testFailed)
+            let promiseD = Promise<Double> { _, reject in
+                DispatchQueue.global().async {
+                    reject(TestError.testFailed)
+                }
             }
-        }
 
-        let promiseE = Promise<[String]> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve(["E"])
+            let promiseE = Promise<[String]> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve(["E"])
+                }
             }
-        }
 
-        let promiseF = Promise<[Int: String]> { resolve, _ in
-            DispatchQueue.global().async {
-                resolve([1: "F"])
+            let promiseF = Promise<[Int: String]> { resolve, _ in
+                DispatchQueue.global().async {
+                    resolve([1: "F"])
+                }
             }
-        }
 
-        let allPromise = Promise<(Int, String, Bool, Double, [String], [Int: String])>.all(promiseA, promiseB, promiseC, promiseD, promiseE, promiseF)
+            let allPromise = Promise<(Int, String, Bool, Double, [String], [Int: String])>.all(promiseA, promiseB, promiseC, promiseD, promiseE, promiseF)
 
-        allPromise.then { _ in
-            XCTFail("One promise should be rejected, but allPromise fulfilled")
-        }.catch { error -> Void in
-            if let error = error as? TestError, error == .testFailed {
-                expectation.fulfill()
-            } else {
-                XCTFail("Expected TestError.rejected but got \(error)")
+            allPromise.then { _ in
+                XCTFail("One promise should be rejected, but allPromise fulfilled")
+            }.catch { error -> Void in
+                if let error = error as? TestError, error == .testFailed {
+                    expectation.fulfill()
+                } else {
+                    XCTFail("Expected TestError.rejected but got \(error)")
+                }
+            }.finally {
+                finallyExpectation.fulfill()
             }
-        }.finally {
-            finallyExpectation.fulfill()
-        }
 
-        wait(for: [expectation, finallyExpectation], timeout: 5.0)
+            wait(for: [expectation, finallyExpectation], timeout: 5.0)
+        }
     }
 
     // MARK: - 测试六个 Promise 中混合调用 resolve 和 reject 时的行为
