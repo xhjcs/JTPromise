@@ -718,27 +718,14 @@ final class PromiseTests: XCTestCase {
     // 测试 `resolve` 和 `reject` 在多线程下的竞争，确保状态只会被变更一次
     func testPromiseConcurrentStateChange() {
         // 用于标识状态是否被改变
-        var stateChangedCount = 0
-        var isSuccess: Bool = true
+        var stateChangedCount = 50
         let promise = Promise<Int> { resolve, reject in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                 // 同时进行 50 次 `resolve` 和 `reject` 调用
-                DispatchQueue.concurrentPerform(iterations: 50) { index in
+                DispatchQueue.concurrentPerform(iterations: stateChangedCount) { index in
                     if index % 2 == 0 {
-                        DispatchQueue.global().async(flags: .barrier) {
-                            isSuccess = true
-                            if isSuccess {
-                                stateChangedCount += 1
-                            }
-                        }
                         resolve(index)
                     } else {
-                        DispatchQueue.global().async(flags: .barrier) {
-                            isSuccess = false
-                            if !isSuccess {
-                                stateChangedCount += 1
-                            }
-                        }
                         reject(TestError.testFailed)
                     }
                 }
@@ -771,7 +758,7 @@ final class PromiseTests: XCTestCase {
             }
         }
 
-        group.notify(queue: .main) {
+        syncGroup.notify(queue: .main) {
             // 确保 `then` 或 `catch` 处理程序只调用一次
             XCTAssertEqual(stateChangedCount, 0, "Promise state changed multiple times")
             expectation.fulfill()
@@ -784,12 +771,9 @@ final class PromiseTests: XCTestCase {
     func testConcurrentFulfillCalls() {
         let promise = Promise<Int> { resolve, _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                let group = DispatchGroup()
                 for _ in 0 ..< 100 {
-                    group.enter()
                     DispatchQueue.global().async {
                         resolve(42)
-                        group.leave()
                     }
                 }
             })
@@ -813,12 +797,9 @@ final class PromiseTests: XCTestCase {
     func testConcurrentRejectCalls() {
         let promise = Promise<Int> { _, reject in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                let group = DispatchGroup()
                 for _ in 0 ..< 100 {
-                    group.enter()
                     DispatchQueue.global().async {
                         reject(TestError.testFailed)
-                        group.leave()
                     }
                 }
             })
@@ -839,20 +820,15 @@ final class PromiseTests: XCTestCase {
     }
 
     // 测试 `resolve` 和 `reject` 的并发调用，确保最终只发生一种情况
-    func testConcurrentResolveAndReject() {
+    func testDelayConcurrentResolveAndReject() {
         let promise = Promise<Int> { resolve, reject in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                let group = DispatchGroup()
                 for _ in 0 ..< 100 {
-                    group.enter()
                     DispatchQueue.global().async {
                         resolve(42)
-                        group.leave()
                     }
-                    group.enter()
                     DispatchQueue.global().async {
                         reject(TestError.testFailed)
-                        group.leave()
                     }
                 }
             })
@@ -872,5 +848,163 @@ final class PromiseTests: XCTestCase {
         }
 
         wait(for: [expectation], timeout: 2)
+    }
+    
+    // 测试 `resolve` 和 `reject` 的并发调用，确保最终只发生一种情况
+    func testConcurrentResolveAndReject() {
+        for _ in 0..<100 {
+            var promises = [Promise<Int>]()
+            for _ in 0..<10 {
+                let promise = Promise<Int> { resolve, reject in
+                    for _ in 0 ..< 5 {
+                        DispatchQueue.global().async {
+                            resolve(42)
+                        }
+                        DispatchQueue.global().async {
+                            reject(TestError.testFailed)
+                        }
+                    }
+                }
+                promises.append(promise)
+            }
+            
+            for promise in promises {
+                DispatchQueue.global().async {
+                    let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+
+                    var resolveCount = 0
+                    var rejectCount = 0
+
+                    promise.then { _ in
+                        resolveCount += 1
+                    }.catch { _ in
+                        rejectCount += 1
+                    }.finally {
+                        XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
+                        expectation.fulfill()
+                    }
+
+                    self.wait(for: [expectation], timeout: 2)
+                }
+            }
+        }
+    }
+    
+    func testAsyncConcurrentResolveAndReject() {
+        for _ in 0..<100 {
+            var promises = [Promise<Int>]()
+            for _ in 0..<10 {
+                let promise = Promise<Int> { resolve, reject in
+                    for _ in 0 ..< 5 {
+                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                            resolve(42)
+                        }
+                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                            reject(TestError.testFailed)
+                        }
+                    }
+                }
+                promises.append(promise)
+            }
+            
+            for promise in promises {
+                DispatchQueue.global().async {
+                    let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+
+                    var resolveCount = 0
+                    var rejectCount = 0
+
+                    promise.then { _ in
+                        resolveCount += 1
+                    }.catch { _ in
+                        rejectCount += 1
+                    }.finally {
+                        XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
+                        expectation.fulfill()
+                    }
+
+                    self.wait(for: [expectation], timeout: 2)
+                }
+            }
+        }
+    }
+    
+    // 测试 `resolve` 和 `reject` 的并发调用，确保最终只发生一种情况
+    func testConcurrentRejectAndResolve() {
+        for _ in 0..<100 {
+            var promises = [Promise<Int>]()
+            for _ in 0..<10 {
+                let promise = Promise<Int> { resolve, reject in
+                    for _ in 0 ..< 5 {
+                        DispatchQueue.global().async {
+                            reject(TestError.testFailed)
+                        }
+                        DispatchQueue.global().async {
+                            resolve(42)
+                        }
+                    }
+                }
+                promises.append(promise)
+            }
+            
+            for promise in promises {
+                DispatchQueue.global().async {
+                    let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+
+                    var resolveCount = 0
+                    var rejectCount = 0
+
+                    promise.then { _ in
+                        resolveCount += 1
+                    }.catch { _ in
+                        rejectCount += 1
+                    }.finally {
+                        XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
+                        expectation.fulfill()
+                    }
+
+                    self.wait(for: [expectation], timeout: 2)
+                }
+            }
+        }
+    }
+    
+    func testAsyncConcurrentRejectAndResolve() {
+        for _ in 0..<100 {
+            var promises = [Promise<Int>]()
+            for _ in 0..<10 {
+                let promise = Promise<Int> { resolve, reject in
+                    for _ in 0 ..< 5 {
+                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                            reject(TestError.testFailed)
+                        }
+                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                            resolve(42)
+                        }
+                    }
+                }
+                promises.append(promise)
+            }
+            
+            for promise in promises {
+                DispatchQueue.global().async {
+                    let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+
+                    var resolveCount = 0
+                    var rejectCount = 0
+
+                    promise.then { _ in
+                        resolveCount += 1
+                    }.catch { _ in
+                        rejectCount += 1
+                    }.finally {
+                        XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
+                        expectation.fulfill()
+                    }
+
+                    self.wait(for: [expectation], timeout: 2)
+                }
+            }
+        }
     }
 }

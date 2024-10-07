@@ -78,36 +78,38 @@ final class PromiseAnyTests: XCTestCase {
     }
 
     func testPromiseAnyThreadSafety() {
-        let expectation = PromiseExpectation(description: "All promises in array should settle concurrently with mixed fulfilled and rejected states")
-        let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
+        for _ in 0..<100 {
+            let expectation = PromiseExpectation(description: "All promises in array should settle concurrently with mixed fulfilled and rejected states")
+            let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
 
-        // 创建多个 Promise，每个在不同线程中调用 resolve 或 reject，并将其添加到数组中。
-        var promises = [Promise<Int>]()
-        for i in 0 ..< 100 {
-            promises.append(Promise { resolve, reject in
-                DispatchQueue.global().async {
-                    if i % 2 == 0 {
-                        resolve(i)
-                    } else {
-                        reject(TestError.testFailed)
+            // 创建多个 Promise，每个在不同线程中调用 resolve 或 reject，并将其添加到数组中。
+            var promises = [Promise<Int>]()
+            for i in 0 ..< 100 {
+                promises.append(Promise { resolve, reject in
+                    DispatchQueue.global().async {
+                        if i % 2 == 0 {
+                            resolve(i)
+                        } else {
+                            reject(TestError.testFailed)
+                        }
                     }
-                }
-            })
+                })
+            }
+
+            // 使用 `allSettled` 处理 Promise 数组
+            let allSettledPromise = Promise.any(promises)
+
+            allSettledPromise.then { results in
+                XCTAssertTrue(results == 0)
+                expectation.fulfill()
+            }.catch { error in
+                XCTFail("Promise.allSettled should not reject, but caught error: \(error)")
+            }.finally {
+                finallyExpectation.fulfill()
+            }
+
+            wait(for: [expectation, finallyExpectation], timeout: 3.0)
         }
-
-        // 使用 `allSettled` 处理 Promise 数组
-        let allSettledPromise = Promise.any(promises)
-
-        allSettledPromise.then { results in
-            XCTAssertTrue(results == 0)
-            expectation.fulfill()
-        }.catch { error in
-            XCTFail("Promise.allSettled should not reject, but caught error: \(error)")
-        }.finally {
-            finallyExpectation.fulfill()
-        }
-
-        wait(for: [expectation, finallyExpectation], timeout: 3.0)
     }
 
     func testPromiseAnyFailureThreadSafety() {
