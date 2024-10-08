@@ -429,7 +429,7 @@ final class PromiseAllTests: XCTestCase {
                 .finally {
                     finallyExpectation.fulfill()
                 }
-            wait(for: [catchExpectation, finallyExpectation])
+            wait(for: [catchExpectation, finallyExpectation], timeout: 2.0)
         }
     }
     
@@ -470,7 +470,7 @@ final class PromiseAllTests: XCTestCase {
                 .finally {
                     finallyExpectation.fulfill()
                 }
-            wait(for: [thenExpectation, finallyExpectation])
+            wait(for: [thenExpectation, finallyExpectation], timeout: 2.0)
         }
     }
 
