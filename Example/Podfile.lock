@@ -1,5 +1,5 @@
 PODS:
-  - JTPromise (1.0.8)
+  - JTPromise (1.1.2)
 
 DEPENDENCIES:
   - JTPromise (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  JTPromise: d44ca7d4cfa141388930098f1dd08bf2bfc2deca
+  JTPromise: 183e5c29c4a9bf58953a0574d496e3b7fc17df2a
 
 PODFILE CHECKSUM: 5696bd47ab524e8c8096899171cc775432851e80
 
