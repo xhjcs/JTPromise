@@ -26,7 +26,7 @@ final class PromiseAnyTests: XCTestCase {
             XCTFail("Promise.any should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncPromiseAnySuccess() {
@@ -56,7 +56,7 @@ final class PromiseAnyTests: XCTestCase {
             XCTFail("Promise.any should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseAnyFailure() {
@@ -74,7 +74,7 @@ final class PromiseAnyTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseAnyThreadSafety() {
@@ -108,7 +108,7 @@ final class PromiseAnyTests: XCTestCase {
                 finallyExpectation.fulfill()
             }
 
-            wait(for: [expectation, finallyExpectation], timeout: 3.0)
+            wait(for: [expectation, finallyExpectation], timeout: 3.0, enforceOrder: true)
         }
     }
 
@@ -137,6 +137,6 @@ final class PromiseAnyTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 3.0)
+        wait(for: [expectation, finallyExpectation], timeout: 3.0, enforceOrder: true)
     }
 }

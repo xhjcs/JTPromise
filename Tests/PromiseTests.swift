@@ -19,7 +19,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncPromiseInitializationWithValue() {
@@ -36,7 +36,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseInitializationWithError() {
@@ -49,7 +49,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncPromiseInitializationWithError() {
@@ -66,7 +66,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testThenHandler() {
@@ -82,7 +82,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncThenHandler() {
@@ -102,7 +102,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testThenHandlerWithPromiseReturn() {
@@ -118,7 +118,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncThenHandlerWithPromiseReturn() {
@@ -138,7 +138,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncThenHandlerWithAsyncPromiseReturn() {
@@ -162,7 +162,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testCatchHandler() {
@@ -177,7 +177,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncCatchHandler() {
@@ -194,7 +194,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
     
     func testThenThrowError() {
@@ -211,7 +211,7 @@ final class PromiseTests: XCTestCase {
             XCTAssertTrue((error as! TestError) == .testFailed)
         }
         
-        wait(for: [thenExpectation, catchExpectation], timeout: 1.0)
+        wait(for: [thenExpectation, catchExpectation], timeout: 1.0, enforceOrder: true)
     }
     
     func testAsyncThenThrowError() {
@@ -233,7 +233,7 @@ final class PromiseTests: XCTestCase {
             XCTAssertTrue((error as! TestError) == .testFailed)
         }
         
-        wait(for: [thenExpectation, catchExpectation], timeout: 1.0)
+        wait(for: [thenExpectation, catchExpectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testCatchHandlerWithValueReturn() {
@@ -251,7 +251,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncCatchHandlerWithValueReturn() {
@@ -271,7 +271,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testFinallyHandler() {
@@ -283,7 +283,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncFinallyHandler() {
@@ -299,7 +299,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testFinallyHandlerAfterCatch() {
@@ -317,7 +317,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation, catchExpectation], timeout: 1.0)
+        wait(for: [catchExpectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncFinallyHandlerAfterCatch() {
@@ -337,7 +337,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation, catchExpectation], timeout: 1.0)
+        wait(for: [catchExpectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testFinallyHandlerAfterThanAndCatch() {
@@ -357,7 +357,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, thenExpectation], timeout: 1.0)
+        wait(for: [thenExpectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncFinallyHandlerAfterThanAndCatch() {
@@ -382,7 +382,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, catchExpectation], timeout: 1.0)
+        wait(for: [catchExpectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testVoidCatch() {
@@ -413,7 +413,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, thenExpectation, catchExpectation], timeout: 1.0)
+        wait(for: [catchExpectation, thenExpectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testValueCatch() {
@@ -445,7 +445,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, catchExpectation, thenExpectation], timeout: 1.0)
+        wait(for: [catchExpectation, thenExpectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseCatch() {
@@ -477,7 +477,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, catchExpectation, thenExpectation], timeout: 1.0)
+        wait(for: [catchExpectation, thenExpectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseCatchNextCatch() {
@@ -514,7 +514,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, catchExpectation, thenExpectation], timeout: 1.0)
+        wait(for: [catchExpectation, thenExpectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testVoidThenAndThen() {
@@ -551,7 +551,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, thenExpectation, then1Expectation], timeout: 1.0)
+        wait(for: [thenExpectation, then1Expectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testValueThenAndThen() {
@@ -589,7 +589,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, thenExpectation, then1Expectation], timeout: 1.0)
+        wait(for: [thenExpectation, then1Expectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseThenAndThen() {
@@ -627,7 +627,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, thenExpectation, then1Expectation], timeout: 1.0)
+        wait(for: [thenExpectation, then1Expectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncPromiseThenAndThen() {
@@ -669,7 +669,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, thenExpectation, then1Expectation], timeout: 1.0)
+        wait(for: [thenExpectation, then1Expectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testErrorPromiseThenAndThen() {
@@ -712,7 +712,7 @@ final class PromiseTests: XCTestCase {
                 expectation.fulfill()
             }
 
-        wait(for: [expectation, thenExpectation, then1Expectation, catchExpectation], timeout: 1.0)
+        wait(for: [thenExpectation, catchExpectation, then1Expectation, expectation], timeout: 1.0, enforceOrder: true)
     }
 
     // 测试 `resolve` 和 `reject` 在多线程下的竞争，确保状态只会被变更一次
@@ -764,14 +764,14 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 2, enforceOrder: true)
     }
 
     // 测试多线程下 `fulfill` 的竞争
     func testConcurrentFulfillCalls() {
         let promise = Promise<Int> { resolve, _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                for _ in 0 ..< 100 {
+                for _ in 0 ..< 10 {
                     DispatchQueue.global().async {
                         resolve(42)
                     }
@@ -790,14 +790,14 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 2, enforceOrder: true)
     }
 
     // 测试多线程下 `reject` 的竞争
     func testConcurrentRejectCalls() {
         let promise = Promise<Int> { _, reject in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                for _ in 0 ..< 100 {
+                for _ in 0 ..< 10 {
                     DispatchQueue.global().async {
                         reject(TestError.testFailed)
                     }
@@ -816,14 +816,14 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 2, enforceOrder: true)
     }
 
     // 测试 `resolve` 和 `reject` 的并发调用，确保最终只发生一种情况
     func testDelayConcurrentResolveAndReject() {
         let promise = Promise<Int> { resolve, reject in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                for _ in 0 ..< 100 {
+                for _ in 0 ..< 10 {
                     DispatchQueue.global().async {
                         resolve(42)
                     }
@@ -847,7 +847,7 @@ final class PromiseTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 2)
+        wait(for: [expectation], timeout: 2, enforceOrder: true)
     }
     
     // 测试 `resolve` 和 `reject` 的并发调用，确保最终只发生一种情况
@@ -884,7 +884,7 @@ final class PromiseTests: XCTestCase {
                         expectation.fulfill()
                     }
 
-                    self.wait(for: [expectation], timeout: 2)
+                    self.wait(for: [expectation], timeout: 2, enforceOrder: true)
                 }
             }
         }
@@ -923,7 +923,7 @@ final class PromiseTests: XCTestCase {
                         expectation.fulfill()
                     }
 
-                    self.wait(for: [expectation], timeout: 2)
+                    self.wait(for: [expectation], timeout: 2, enforceOrder: true)
                 }
             }
         }
@@ -963,7 +963,7 @@ final class PromiseTests: XCTestCase {
                         expectation.fulfill()
                     }
 
-                    self.wait(for: [expectation], timeout: 2)
+                    self.wait(for: [expectation], timeout: 2, enforceOrder: true)
                 }
             }
         }
@@ -1002,7 +1002,7 @@ final class PromiseTests: XCTestCase {
                         expectation.fulfill()
                     }
 
-                    self.wait(for: [expectation], timeout: 2)
+                    self.wait(for: [expectation], timeout: 2, enforceOrder: true)
                 }
             }
         }

@@ -29,7 +29,7 @@ final class PromiseAllSettledTests: XCTestCase {
             XCTFail("Promise.allSettled should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseAllSettledWithRejection() {
@@ -50,7 +50,7 @@ final class PromiseAllSettledTests: XCTestCase {
             XCTFail("Promise.allSettled should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncPromiseAllSettledSuccess() {
@@ -78,7 +78,7 @@ final class PromiseAllSettledTests: XCTestCase {
             XCTFail("Promise.allSettled should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     // MARK: - 测试 `Promise.allSettled` 处理传入数组的 Promise，并验证各个 Promise 的最终状态
@@ -150,7 +150,7 @@ final class PromiseAllSettledTests: XCTestCase {
             XCTFail("Promise.allSettled should not reject, but caught error: \(error)")
         }
 
-        wait(for: [expectation], timeout: 3.0)
+        wait(for: [expectation], timeout: 3.0, enforceOrder: true)
     }
 
     func testAllSettledWithEmptyPromiseArray() {
@@ -167,7 +167,7 @@ final class PromiseAllSettledTests: XCTestCase {
             XCTFail("Promise.allSettled should not reject for an empty promise array, but caught error: \(error)")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAllSettledWithAllPromisesRejected() {
@@ -213,7 +213,7 @@ final class PromiseAllSettledTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 3.0)
+        wait(for: [expectation, finallyExpectation], timeout: 3.0, enforceOrder: true)
     }
 
     func testAllSettledWithAllPromisesFulfilled() {
@@ -259,7 +259,7 @@ final class PromiseAllSettledTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 3.0)
+        wait(for: [expectation, finallyExpectation], timeout: 3.0, enforceOrder: true)
     }
 
     // MARK: - 测试多个 Promise 在不同线程中调用 resolve 或 reject 时，Promise.allSettled 的行为
@@ -361,7 +361,7 @@ final class PromiseAllSettledTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 5.0)
+        wait(for: [expectation, finallyExpectation], timeout: 5.0, enforceOrder: true)
     }
 
     func testAllSettledWithMixedPromisesThenCatchFinally() {
@@ -418,7 +418,7 @@ final class PromiseAllSettledTests: XCTestCase {
                 finallyExpectation.fulfill()
             }
 
-            wait(for: [expectation, finallyExpectation], timeout: 5.0)
+            wait(for: [expectation, finallyExpectation], timeout: 5.0, enforceOrder: true)
         }
     }
 }

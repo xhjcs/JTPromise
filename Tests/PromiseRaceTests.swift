@@ -26,7 +26,7 @@ final class PromiseRaceTests: XCTestCase {
             XCTFail("Promise.race should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testArrayPromiseRaceFailure() {
@@ -44,7 +44,7 @@ final class PromiseRaceTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseRaceFailure() {
@@ -62,7 +62,7 @@ final class PromiseRaceTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseRaceThreadSafety() {
@@ -114,7 +114,7 @@ final class PromiseRaceTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 3.0)
+        wait(for: [expectation, finallyExpectation], timeout: 3.0, enforceOrder: true)
     }
 
     func testPromiseRaceThreadSafety1() {
@@ -166,6 +166,6 @@ final class PromiseRaceTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 3.0)
+        wait(for: [expectation, finallyExpectation], timeout: 3.0, enforceOrder: true)
     }
 }

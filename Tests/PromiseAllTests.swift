@@ -26,7 +26,7 @@ final class PromiseAllTests: XCTestCase {
             XCTFail("Promise.all should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncPromiseAllWithArraySuccess() {
@@ -48,7 +48,7 @@ final class PromiseAllTests: XCTestCase {
             XCTFail("Promise.all should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseAllWithArrayFailure() {
@@ -66,7 +66,7 @@ final class PromiseAllTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncPromiseAllWithArrayFailure() {
@@ -88,7 +88,7 @@ final class PromiseAllTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testPromiseAllWithEmptyArray() {
@@ -102,7 +102,7 @@ final class PromiseAllTests: XCTestCase {
             XCTFail("Promise.all should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     // MARK: - Test Promise.all with multiple types
@@ -126,7 +126,7 @@ final class PromiseAllTests: XCTestCase {
             XCTFail("Promise.all should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncPromiseAllWithDifferentTypes() {
@@ -150,7 +150,7 @@ final class PromiseAllTests: XCTestCase {
             XCTFail("Promise.all should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncErrorPromiseAllWithDifferentTypes() {
@@ -176,7 +176,7 @@ final class PromiseAllTests: XCTestCase {
             XCTAssertTrue((error as! TestError) == TestError.testFailed)
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncPromiseAllCombineWithDifferentTypes() {
@@ -203,7 +203,7 @@ final class PromiseAllTests: XCTestCase {
             XCTFail("Promise.all should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncErrorPromiseAllCombineWithDifferentTypes() {
@@ -230,7 +230,7 @@ final class PromiseAllTests: XCTestCase {
             expectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testAsyncCatchErrorPromiseAllCombineWithDifferentTypes() {
@@ -260,7 +260,7 @@ final class PromiseAllTests: XCTestCase {
             XCTFail("Promise.all should not reject")
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
 
     func testFinallyPromiseAllCombineWithDifferentTypes() {
@@ -293,7 +293,7 @@ final class PromiseAllTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 1.0)
+        wait(for: [expectation, finallyExpectation], timeout: 1.0, enforceOrder: true)
     }
 
     // MARK: - 测试多线程并发操作 Promise.all
@@ -322,7 +322,7 @@ final class PromiseAllTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 5.0)
+        wait(for: [expectation, finallyExpectation], timeout: 5.0, enforceOrder: true)
     }
 
     // MARK: - 测试 Promise.all 是否能够正确释放内存
@@ -349,7 +349,7 @@ final class PromiseAllTests: XCTestCase {
             }
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 1.0)
+        wait(for: [expectation, finallyExpectation], timeout: 1.0, enforceOrder: true)
         XCTAssertNil(weakPromise, "The Promise.all should have been deallocated")
     }
 
@@ -389,8 +389,8 @@ final class PromiseAllTests: XCTestCase {
                 finallyExpectation2.fulfill()
             }
         }
-
-        wait(for: [expectation1, expectation2, finallyExpectation1, finallyExpectation2], timeout: 2.0)
+        wait(for: [expectation1, finallyExpectation1], timeout: 2.0, enforceOrder: true)
+        wait(for: [expectation2, finallyExpectation2], timeout: 2.0, enforceOrder: true)
     }
     
     func testAllPromisesThreadSafe() {
@@ -429,7 +429,7 @@ final class PromiseAllTests: XCTestCase {
                 .finally {
                     finallyExpectation.fulfill()
                 }
-            wait(for: [catchExpectation, finallyExpectation], timeout: 2.0)
+            wait(for: [catchExpectation, finallyExpectation], timeout: 2.0, enforceOrder: true)
         }
     }
     
@@ -470,7 +470,7 @@ final class PromiseAllTests: XCTestCase {
                 .finally {
                     finallyExpectation.fulfill()
                 }
-            wait(for: [thenExpectation, finallyExpectation], timeout: 2.0)
+            wait(for: [thenExpectation, finallyExpectation], timeout: 2.0, enforceOrder: true)
         }
     }
 
@@ -503,7 +503,7 @@ final class PromiseAllTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 5.0)
+        wait(for: [expectation, finallyExpectation], timeout: 5.0, enforceOrder: true)
     }
 
     // MARK: - 测试所有 Promise 都在不同线程中调用 reject 时的行为
@@ -542,7 +542,7 @@ final class PromiseAllTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 5.0)
+        wait(for: [expectation, finallyExpectation], timeout: 5.0, enforceOrder: true)
     }
 
     // MARK: - 测试多线程混合调用 resolve 和 reject 时 Promise.all 的行为
@@ -577,7 +577,7 @@ final class PromiseAllTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 5.0)
+        wait(for: [expectation, finallyExpectation], timeout: 5.0, enforceOrder: true)
     }
 
     // MARK: - 测试六个 Promise 都在不同线程中调用 resolve 时的行为
@@ -641,7 +641,7 @@ final class PromiseAllTests: XCTestCase {
                 finallyExpectation.fulfill()
             }
 
-            wait(for: [expectation, finallyExpectation], timeout: 5.0)
+            wait(for: [expectation, finallyExpectation], timeout: 5.0, enforceOrder: true)
         }
     }
 
@@ -703,7 +703,7 @@ final class PromiseAllTests: XCTestCase {
                 finallyExpectation.fulfill()
             }
 
-            wait(for: [expectation, finallyExpectation], timeout: 5.0)
+            wait(for: [expectation, finallyExpectation], timeout: 5.0, enforceOrder: true)
         }
     }
 
@@ -760,6 +760,6 @@ final class PromiseAllTests: XCTestCase {
             finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation, finallyExpectation], timeout: 5.0)
+        wait(for: [expectation, finallyExpectation], timeout: 5.0, enforceOrder: true)
     }
 }
