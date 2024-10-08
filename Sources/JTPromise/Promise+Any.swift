@@ -10,11 +10,11 @@ import Foundation
 public extension Promise {
     static func any(_ promises: [Promise<Value>]) -> Promise<Value> {
         guard !promises.isEmpty else {
-            return Promise<Value>(reject: PromiseError.emptyPromises)
+            return Promise(reject: PromiseError.emptyPromises)
         }
         var remaining = promises.count
         let lock = PromiseLock()
-        return Promise<Value> { (resolve: @escaping (Value) -> Void, reject: @escaping (Error) -> Void) in
+        return Promise<Value> { resolve, reject in
             for promise in promises {
                 promise
                     .then(resolve)

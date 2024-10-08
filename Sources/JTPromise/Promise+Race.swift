@@ -10,7 +10,7 @@ import Foundation
 public extension Promise {
     static func race(_ promises: [Promise<Value>]) -> Promise<Value> {
         guard !promises.isEmpty else {
-            return Promise<Value>(reject: PromiseError.emptyPromises)
+            return Promise(reject: PromiseError.emptyPromises)
         }
         return Promise<Value> { resolve, reject in
             for promise in promises {
