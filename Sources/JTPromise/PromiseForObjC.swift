@@ -94,6 +94,7 @@ public final class __PromiseForObjC__: NSObject {
         return __PromiseForObjC__(promise: swiftPromise)
     }
 
+    @discardableResult
     @objc public func finally() -> (_ handler: @escaping () -> Void) -> __PromiseForObjC__ {
         return _finally
     }
