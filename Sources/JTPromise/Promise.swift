@@ -116,7 +116,7 @@ public final class Promise<Value> {
             defer {
                 lock.unlock()
             }
-            return Promise<Value?> { (resolve: @escaping (Value?) -> Void, reject: @escaping (Error) -> Void) in
+            return Promise<Value?> { resolve, reject in
                 self.fulfillHandlers.append(resolve)
                 self.rejectHandlers.append {
                     do {
@@ -158,7 +158,7 @@ public final class Promise<Value> {
             defer {
                 lock.unlock()
             }
-            return Promise<Value> { (resolve: @escaping (Value) -> Void, reject: @escaping (Error) -> Void) in
+            return Promise<Value> { resolve, reject in
                 self.fulfillHandlers.append(resolve)
                 self.rejectHandlers.append {
                     do {
