@@ -51,15 +51,15 @@ public final class __PromiseForObjC__: NSObject {
     }
 
     @objc public static func resolve(_ value: AnyObject?) -> __PromiseForObjC__ {
-        return self.init(promise: Promise<AnyObject?>(resolve: value))
+        return self.init(promise: Promise(resolve: value))
     }
 
     @objc public static func reject(_ error: Error) -> __PromiseForObjC__ {
-        return self.init(promise: Promise<AnyObject?>(reject: error))
+        return self.init(promise: Promise(reject: error))
     }
 
     @objc public static func promise(executor: @escaping (_ resolve: @escaping (_ value: AnyObject?) -> Void, _ reject: @escaping (_ error: Error) -> Void) -> Void) -> __PromiseForObjC__ {
-        return self.init(promise: Promise<AnyObject?>(executor: executor))
+        return self.init(promise: Promise(executor: executor))
     }
 
     @discardableResult
