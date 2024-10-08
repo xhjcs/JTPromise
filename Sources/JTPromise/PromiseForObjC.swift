@@ -94,12 +94,12 @@ public final class __PromiseForObjC__: NSObject {
         return __PromiseForObjC__(promise: swiftPromise)
     }
 
-    @objc public func finally() -> (_ handler: @escaping () -> Void) -> Void {
+    @objc public func finally() -> (_ handler: @escaping () -> Void) -> __PromiseForObjC__ {
         return _finally
     }
 
-    private func _finally(_ handler: @escaping () -> Void) {
-        promise.finally(handler)
+    private func _finally(_ handler: @escaping () -> Void) -> __PromiseForObjC__ {
+        return __PromiseForObjC__(promise: promise.finally(handler))
     }
 
     @objc public static func all(_ promises: [__PromiseForObjC__]) -> __PromiseForObjC__ {
