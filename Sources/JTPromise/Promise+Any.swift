@@ -14,7 +14,7 @@ public extension Promise {
         }
         var remaining = promises.count
         let lock = PromiseLock()
-        return Promise<Value> { resolve, reject in
+        return Promise { resolve, reject in
             for promise in promises {
                 promise
                     .then(resolve)

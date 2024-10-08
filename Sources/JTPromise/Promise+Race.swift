@@ -12,7 +12,7 @@ public extension Promise {
         guard !promises.isEmpty else {
             return Promise(reject: PromiseError.emptyPromises)
         }
-        return Promise<Value> { resolve, reject in
+        return Promise { resolve, reject in
             for promise in promises {
                 promise.then(resolve).catch(reject)
             }
