@@ -181,16 +181,48 @@ public final class Promise<Value> {
         }
     }
 
-    public func finally(_ handler: @escaping () -> Void) {
+    @discardableResult
+    public func finally(_ handler: @escaping () throws -> Void) -> Promise<Value> {
         lock.lock()
         switch state {
         case .pending:
-            fulfillHandlers.append { _ in handler() }
-            rejectHandlers.append { _ in handler() }
+            defer {
+                lock.unlock()
+            }
+            return Promise { resolve, reject in
+                self.fulfillHandlers.append {
+                    do {
+                        try handler()
+                        resolve($0)
+                    } catch {
+                        reject(error)
+                    }
+                }
+                self.rejectHandlers.append {
+                    do {
+                        try handler()
+                        reject($0)
+                    } catch {
+                        reject(error)
+                    }
+                }
+            }
+        case let .fulfilled(value):
             lock.unlock()
-        case .fulfilled, .rejected:
+            do {
+                try handler()
+                return Promise(resolve: value)
+            } catch {
+                return Promise(reject: error)
+            }
+        case let .rejected(error):
             lock.unlock()
-            handler()
+            do {
+                try handler()
+                return Promise(reject: error)
+            } catch {
+                return Promise(reject: error)
+            }
         }
     }
 }
