@@ -10,6 +10,7 @@ import XCTest
 
 enum TestError: Error, Equatable {
     case testFailed
+    case testFailed1
 }
 
 class PromiseExpectation: XCTestExpectation {
@@ -33,4 +34,8 @@ class PromiseExpectation: XCTestExpectation {
             super.fulfill()
         }
     }
+}
+
+func delay(time: TimeInterval, task: @escaping () -> Void) {
+    DispatchQueue.global().asyncAfter(deadline: .now() + time, execute: task)
 }

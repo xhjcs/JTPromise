@@ -32,9 +32,15 @@
     }];
 
     promise
+    .finally(^{
+        NSLog(@"finally");
+    })
     .then(^id (NSNumber *value) {
         NSLog(@"then: %@", value);
         return value;
+    })
+    .finally(^{
+        NSLog(@"finally1");
     })
     .catch(^id (NSError *error) {
         NSLog(@"catch: %@", error);
@@ -44,12 +50,18 @@
                            });
         }];
     })
+    .finally(^{
+        NSLog(@"finally2");
+    })
     .then(^id (NSNumber *value) {
         NSLog(@"then1: %@", value);
         return nil;
     })
     .finally(^{
-        NSLog(@"finally");
+        NSLog(@"finally3");
+    })
+    .finally(^{
+        NSLog(@"finally4");
     });
 }
 

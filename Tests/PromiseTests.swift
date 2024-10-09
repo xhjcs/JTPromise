@@ -196,13 +196,13 @@ final class PromiseTests: XCTestCase {
 
         wait(for: [expectation], timeout: 1.0, enforceOrder: true)
     }
-    
+
     func testThenThrowError() {
         let promise = Promise(resolve: 10)
         let thenExpectation = PromiseExpectation(description: "Promise catch handler is called")
         let catchExpectation = PromiseExpectation(description: "Promise catch handler is called")
-        
-        promise.then { value in
+
+        promise.then { value -> Void in
             thenExpectation.fulfill()
             XCTAssertTrue(value == 10)
             throw TestError.testFailed
@@ -210,21 +210,21 @@ final class PromiseTests: XCTestCase {
             catchExpectation.fulfill()
             XCTAssertTrue((error as! TestError) == .testFailed)
         }
-        
+
         wait(for: [thenExpectation, catchExpectation], timeout: 1.0, enforceOrder: true)
     }
-    
+
     func testAsyncThenThrowError() {
         let promise = Promise { resolve, _ in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
                 resolve(10)
             })
         }
-        
+
         let thenExpectation = PromiseExpectation(description: "Promise catch handler is called")
         let catchExpectation = PromiseExpectation(description: "Promise catch handler is called")
-        
-        promise.then { value in
+
+        promise.then { value -> Void in
             thenExpectation.fulfill()
             XCTAssertTrue(value == 10)
             throw TestError.testFailed
@@ -232,7 +232,7 @@ final class PromiseTests: XCTestCase {
             catchExpectation.fulfill()
             XCTAssertTrue((error as! TestError) == .testFailed)
         }
-        
+
         wait(for: [thenExpectation, catchExpectation], timeout: 1.0, enforceOrder: true)
     }
 
@@ -849,12 +849,12 @@ final class PromiseTests: XCTestCase {
 
         wait(for: [expectation], timeout: 2, enforceOrder: true)
     }
-    
+
     // 测试 `resolve` 和 `reject` 的并发调用，确保最终只发生一种情况
     func testConcurrentResolveAndReject() {
-        for _ in 0..<100 {
+        for _ in 0 ..< 100 {
             var promises = [Promise<Int>]()
-            for _ in 0..<10 {
+            for _ in 0 ..< 10 {
                 let promise = Promise<Int> { resolve, reject in
                     for _ in 0 ..< 5 {
                         DispatchQueue.global().async {
@@ -867,7 +867,7 @@ final class PromiseTests: XCTestCase {
                 }
                 promises.append(promise)
             }
-            
+
             for promise in promises {
                 DispatchQueue.global().async {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
@@ -889,11 +889,11 @@ final class PromiseTests: XCTestCase {
             }
         }
     }
-    
+
     func testAsyncConcurrentResolveAndReject() {
-        for _ in 0..<100 {
+        for _ in 0 ..< 100 {
             var promises = [Promise<Int>]()
-            for _ in 0..<10 {
+            for _ in 0 ..< 10 {
                 let promise = Promise<Int> { resolve, reject in
                     for _ in 0 ..< 5 {
                         DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
@@ -906,7 +906,7 @@ final class PromiseTests: XCTestCase {
                 }
                 promises.append(promise)
             }
-            
+
             for promise in promises {
                 DispatchQueue.global().async {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
@@ -928,12 +928,12 @@ final class PromiseTests: XCTestCase {
             }
         }
     }
-    
+
     // 测试 `resolve` 和 `reject` 的并发调用，确保最终只发生一种情况
     func testConcurrentRejectAndResolve() {
-        for _ in 0..<100 {
+        for _ in 0 ..< 100 {
             var promises = [Promise<Int>]()
-            for _ in 0..<10 {
+            for _ in 0 ..< 10 {
                 let promise = Promise<Int> { resolve, reject in
                     for _ in 0 ..< 5 {
                         DispatchQueue.global().async {
@@ -946,7 +946,7 @@ final class PromiseTests: XCTestCase {
                 }
                 promises.append(promise)
             }
-            
+
             for promise in promises {
                 DispatchQueue.global().async {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
@@ -968,11 +968,11 @@ final class PromiseTests: XCTestCase {
             }
         }
     }
-    
+
     func testAsyncConcurrentRejectAndResolve() {
-        for _ in 0..<100 {
+        for _ in 0 ..< 100 {
             var promises = [Promise<Int>]()
-            for _ in 0..<10 {
+            for _ in 0 ..< 10 {
                 let promise = Promise<Int> { resolve, reject in
                     for _ in 0 ..< 5 {
                         DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
@@ -985,7 +985,7 @@ final class PromiseTests: XCTestCase {
                 }
                 promises.append(promise)
             }
-            
+
             for promise in promises {
                 DispatchQueue.global().async {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
@@ -1003,6 +1003,240 @@ final class PromiseTests: XCTestCase {
                     }
 
                     self.wait(for: [expectation], timeout: 2, enforceOrder: true)
+                }
+            }
+        }
+    }
+
+    func testFinally() {
+        let ex = PromiseExpectation(description: "ex")
+        let ex1 = PromiseExpectation(description: "ex1")
+        let promise = Promise(resolve: 101)
+        promise.finally {
+            ex.fulfill()
+        }
+
+        Promise<Int>(reject: TestError.testFailed)
+            .finally {
+                ex1.fulfill()
+            }
+
+        wait(for: [ex, ex1], timeout: 2, enforceOrder: true)
+    }
+
+    func testAsyncFinally() {
+        let ex = PromiseExpectation(description: "ex")
+        let ex1 = PromiseExpectation(description: "ex1")
+        let promise = Promise { resolve, _ in
+            delay(time: 0.1) {
+                resolve(101)
+            }
+        }
+        promise.finally {
+            ex.fulfill()
+        }
+
+        Promise<Int> { _, reject in
+            delay(time: 0.1) {
+                reject(TestError.testFailed)
+            }
+        }
+        .finally {
+            ex1.fulfill()
+        }
+
+        wait(for: [ex, ex1], timeout: 2)
+    }
+
+    func testAsyncFinally1() {
+        let ex = PromiseExpectation(description: "ex")
+        let ex1 = PromiseExpectation(description: "ex1")
+        let ex2 = PromiseExpectation(description: "ex1")
+        let ex3 = PromiseExpectation(description: "ex1")
+        let promise = Promise { resolve, _ in
+            delay(time: 0.1) {
+                resolve(101)
+            }
+        }
+        promise.finally {
+            ex.fulfill()
+        }.then { _ in
+            ex1.fulfill()
+        }.catch { _ in
+            XCTFail()
+        }
+
+        Promise<Int> { _, reject in
+            delay(time: 0.1) {
+                reject(TestError.testFailed)
+            }
+        }
+        .finally {
+            ex2.fulfill()
+        }.then { _ in
+            XCTFail()
+        }.catch { _ in
+            ex3.fulfill()
+        }
+
+        wait(for: [ex, ex1], timeout: 2, enforceOrder: true)
+        wait(for: [ex2, ex3], timeout: 2, enforceOrder: true)
+    }
+
+    func testAsyncFinally2() {
+        let ex = PromiseExpectation(description: "ex")
+        let ex1 = PromiseExpectation(description: "ex1")
+        let ex2 = PromiseExpectation(description: "ex1")
+        let ex3 = PromiseExpectation(description: "ex1")
+        let promise = Promise { resolve, _ in
+            delay(time: 0.1) {
+                resolve(101)
+            }
+        }
+        promise.then { _ in
+            ex.fulfill()
+        }.catch { _ in
+            XCTFail()
+        }.finally {
+            ex1.fulfill()
+        }
+
+        Promise<Int> { _, reject in
+            delay(time: 0.1) {
+                reject(TestError.testFailed)
+            }
+        }.then { _ in
+            XCTFail()
+        }.catch { _ in
+            ex2.fulfill()
+        }
+        .finally {
+            ex3.fulfill()
+        }
+
+        wait(for: [ex, ex1], timeout: 2, enforceOrder: true)
+        wait(for: [ex2, ex3], timeout: 2, enforceOrder: true)
+    }
+
+    func testThenThrow() {
+        let ex = PromiseExpectation(description: "")
+        let ex1 = PromiseExpectation(description: "")
+        let ex2 = PromiseExpectation(description: "")
+        Promise<Int> { resolve, _ in
+            delay(time: 0.1) {
+                resolve(101)
+            }
+        }
+        .then { _ in
+            ex.fulfill()
+            throw TestError.testFailed
+        }
+        .catch { error in
+            XCTAssertEqual(error as! TestError, TestError.testFailed)
+        }
+        .then { _ in
+            ex1.fulfill()
+        }
+        .finally {
+            ex2.fulfill()
+        }
+
+        wait(for: [ex, ex1, ex2], timeout: 1, enforceOrder: true)
+    }
+
+    func testCatchThrow() {
+        let ex = PromiseExpectation(description: "")
+        let ex1 = PromiseExpectation(description: "")
+        let ex2 = PromiseExpectation(description: "")
+        Promise<Int> { _, reject in
+            delay(time: 0.1) {
+                reject(TestError.testFailed)
+            }
+        }
+        .then { _ -> Void in
+            XCTFail()
+        }
+        .catch { error -> Void in
+            XCTAssertEqual(error as! TestError, TestError.testFailed)
+            ex.fulfill()
+            throw TestError.testFailed1
+        }
+        .then { _ -> Void in
+            XCTFail()
+        }
+        .catch { error -> Void in
+            XCTAssertEqual(error as! TestError, TestError.testFailed1)
+            ex1.fulfill()
+        }
+        .finally {
+            ex2.fulfill()
+        }
+
+        wait(for: [ex, ex1, ex2], timeout: 1, enforceOrder: true)
+    }
+
+    func testFinallyThrow() {
+        let ex = PromiseExpectation(description: "")
+        let ex1 = PromiseExpectation(description: "")
+        Promise { resolve, _ in
+            delay(time: 0.1) {
+                resolve(101)
+            }
+        }
+        .finally {
+            ex.fulfill()
+            throw TestError.testFailed
+        }
+        .then { _ -> Void in
+            XCTFail()
+        }
+        .catch { error -> Void in
+            XCTAssertEqual(error as! TestError, TestError.testFailed)
+            ex1.fulfill()
+        }
+
+        wait(for: [ex, ex1], timeout: 1, enforceOrder: true)
+    }
+
+    func testFinallyThreadSafe() {
+        for _ in 0 ..< 100 {
+            var promises = [Promise<Int>]()
+            for _ in 0 ..< 10 {
+                let promise = Promise<Int> { resolve, reject in
+                    for _ in 0 ..< 5 {
+                        DispatchQueue.global().async {
+                            resolve(42)
+                        }
+                        DispatchQueue.global().async {
+                            reject(TestError.testFailed)
+                        }
+                    }
+                }
+                promises.append(promise)
+            }
+
+            for promise in promises {
+                DispatchQueue.global().async {
+                    let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+                    let expectation1 = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+
+                    var resolveCount = 0
+                    var rejectCount = 0
+
+                    promise
+                        .finally {
+                            expectation.fulfill()
+                        }
+                        .then { _ in
+                            resolveCount += 1
+                        }.catch { _ in
+                            rejectCount += 1
+                        }.finally {
+                            XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
+                            expectation1.fulfill()
+                        }
+
+                    self.wait(for: [expectation, expectation1], timeout: 2, enforceOrder: true)
                 }
             }
         }
