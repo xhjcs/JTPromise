@@ -209,14 +209,14 @@ JTPromise一个轻量级的线程安全的Promise库，适用于Swift和Objectiv
 
 ## 特性
 
-- **JavaScript风格API**：`JTPromise` API完全符合JavaScript的`Promise`设计，对于熟悉JavaScript的开发者来说非常直观，非常适合同时具有iOS、ReactNative、H5、鸿蒙技术栈的开发者。
+- **JavaScript风格API**：`JTPromise` API完全符合JavaScript的`Promise`设计，对于熟悉`JavaScript`的开发者来说非常直观，非常适合同时具有`iOS`、`ReactNative`、`H5`、`鸿蒙`技术栈的开发者。
 - **可链式调用**：使用`.then`、`.catch`和`.finally`处理程序链式调用多个异步操作。
-- **Promise组合器**：支持`all`、`allSettled`、`any`和`race`，用于并发管理多个Promise，和JavaScript中Promise行为一致。
+- **`Promise`组合器**：支持`all`、`allSettled`、`any`和`race`，用于并发管理多个`Promise`，和`JavaScript`中`Promise`行为一致。
 - **线程安全**：确保在多个线程之间安全地进行状态转换。
-- **Objective-C兼容性**：与Objective-C项目无缝集成。
+- **`Objective-C`兼容性**：与`Objective-C`项目无缝集成。
 
 ## API 概述
-JTPromise遵循与JavaScript的Promise相同的API设计，如： .then()、.catch()、.finally() 和 Promise 组合方法，如： all()、allSettled()、any() 和 race()。
+`JTPromise`遵循与`JavaScript`的`Promise`相同的API设计，如： `.then()`、`.catch()`、`.finally()` 和 `Promise` 组合方法，如： `all()`、`allSettled()`、`any()` 和 `race()`。
 
 ### Swift
 ```Swift
