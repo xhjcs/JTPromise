@@ -46,6 +46,7 @@ public final class Promise<Value> {
         let handlers = fulfillHandlers
         lock.unlock()
         handlers.forEach { $0(value) }
+        clearInvalidHandlers()
     }
 
     private func reject(_ error: Error) {
@@ -58,6 +59,7 @@ public final class Promise<Value> {
         let handlers = rejectHandlers
         lock.unlock()
         handlers.forEach { $0(error) }
+        clearInvalidHandlers()
     }
 
     @discardableResult
@@ -224,5 +226,12 @@ public final class Promise<Value> {
                 return Promise(reject: error)
             }
         }
+    }
+    
+    private func clearInvalidHandlers() {
+        lock.lock()
+        fulfillHandlers.removeAll()
+        rejectHandlers.removeAll()
+        lock.unlock()
     }
 }
