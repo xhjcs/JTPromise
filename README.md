@@ -190,7 +190,7 @@ Add the following to your `Package.swift` file:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/xhjcs/JTPromise.git", from: "1.1.5")
+    .package(url: "https://github.com/xhjcs/JTPromise.git", from: "1.1.6")
 ]
 ```
 
@@ -394,7 +394,7 @@ pod 'JTPromise'
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/xhjcs/JTPromise.git", from: "1.1.5")
+    .package(url: "https://github.com/xhjcs/JTPromise.git", from: "1.1.6")
 ]
 ```
 
