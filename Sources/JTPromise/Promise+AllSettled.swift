@@ -22,9 +22,13 @@ public extension Promise {
         var remaining = count
         let lock = PromiseLock()
         return Promise<[PromiseSettledResult]> { resolve, _ in
-            func handleFinally() {
+            func handleSettledResult(_ result: PromiseSettledResult<Value>, at index: Int) {
+                lock.lock()
+                results[index] = result
                 remaining -= 1
-                if remaining == 0 {
+                let resolved = remaining == 0
+                lock.unlock()
+                if resolved {
                     resolve(results.compactMap { $0 })
                 }
             }
@@ -32,16 +36,10 @@ public extension Promise {
                 let promise = promises[i]
                 promise
                     .then { value in
-                        lock.lock()
-                        results[i] = .fulfilled(value)
-                        handleFinally()
-                        lock.unlock()
+                        handleSettledResult(.fulfilled(value), at: i)
                     }
-                    .catch { error -> Void in
-                        lock.lock()
-                        results[i] = .rejected(error)
-                        handleFinally()
-                        lock.unlock()
+                    .catch { error in
+                        handleSettledResult(.rejected(error), at: i)
                     }
             }
         }
