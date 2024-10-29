@@ -76,7 +76,10 @@ final class PromiseRaceTests: XCTestCase {
         for i in 0 ..< 100 {
             promises.append(Promise { resolve, reject in
                 delay(time: 0) {
-                    if i % 2 == 0 {
+                    lock.lock()
+                    let flag = i % 2 == 0
+                    lock.unlock()
+                    if flag {
                         delay(time: 0) {
                             lock.lock()
                             if isSuccess == nil {
@@ -133,7 +136,10 @@ final class PromiseRaceTests: XCTestCase {
         for i in 0 ..< 100 {
             promises.append(Promise { resolve, reject in
                 delay(time: 0) {
-                    if i % 2 == 1 {
+                    lock.lock()
+                    let flag = i % 2 == 1
+                    lock.unlock()
+                    if flag {
                         delay(time: 0) {
                             lock.lock()
                             defer {

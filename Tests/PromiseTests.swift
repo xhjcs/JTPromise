@@ -838,20 +838,23 @@ final class PromiseTests: XCTestCase {
             }
         }
         let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+        let finallyExpectation = PromiseExpectation(description: "finallyExpectation")
 
         var resolveCount = 0
         var rejectCount = 0
 
         promise.then { _ in
             resolveCount += 1
-        }.catch { _ in
+            expectation.fulfill()
+        }.catch { _ -> Void in
             rejectCount += 1
+            expectation.fulfill()
         }.finally {
             XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
-            expectation.fulfill()
+            finallyExpectation.fulfill()
         }
 
-        wait(for: [expectation], timeout: 2, enforceOrder: true)
+        wait(for: [expectation, finallyExpectation], timeout: 2, enforceOrder: true)
     }
 
     // 测试 `resolve` 和 `reject` 的并发调用，确保最终只发生一种情况
@@ -875,20 +878,23 @@ final class PromiseTests: XCTestCase {
             for promise in promises {
                 delay(time: 0) {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+                    let finallyExpectation = PromiseExpectation(description: "finallyExpectation")
 
                     var resolveCount = 0
                     var rejectCount = 0
 
                     promise.then { _ in
                         resolveCount += 1
-                    }.catch { _ in
+                        expectation.fulfill()
+                    }.catch { _ -> Void in
                         rejectCount += 1
+                        expectation.fulfill()
                     }.finally {
                         XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
-                        expectation.fulfill()
+                        finallyExpectation.fulfill()
                     }
 
-                    self.wait(for: [expectation], timeout: 2, enforceOrder: true)
+                    self.wait(for: [expectation, finallyExpectation], timeout: 2, enforceOrder: true)
                 }
             }
         }
@@ -914,20 +920,23 @@ final class PromiseTests: XCTestCase {
             for promise in promises {
                 delay(time: 0) {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+                    let finallyExpectation = PromiseExpectation(description: "finallyExpectation")
 
                     var resolveCount = 0
                     var rejectCount = 0
 
                     promise.then { _ in
                         resolveCount += 1
-                    }.catch { _ in
+                        expectation.fulfill()
+                    }.catch { _ -> Void in
                         rejectCount += 1
+                        expectation.fulfill()
                     }.finally {
                         XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
-                        expectation.fulfill()
+                        finallyExpectation.fulfill()
                     }
 
-                    self.wait(for: [expectation], timeout: 2, enforceOrder: true)
+                    self.wait(for: [expectation, finallyExpectation], timeout: 2, enforceOrder: true)
                 }
             }
         }
@@ -954,20 +963,23 @@ final class PromiseTests: XCTestCase {
             for promise in promises {
                 delay(time: 0) {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+                    let finallyExpectation = PromiseExpectation(description: "finallyExpectation")
 
                     var resolveCount = 0
                     var rejectCount = 0
 
                     promise.then { _ in
                         resolveCount += 1
-                    }.catch { _ in
+                        expectation.fulfill()
+                    }.catch { _ -> Void in
                         rejectCount += 1
+                        expectation.fulfill()
                     }.finally {
                         XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
-                        expectation.fulfill()
+                        finallyExpectation.fulfill()
                     }
 
-                    self.wait(for: [expectation], timeout: 2, enforceOrder: true)
+                    self.wait(for: [expectation, finallyExpectation], timeout: 2, enforceOrder: true)
                 }
             }
         }
@@ -989,24 +1001,27 @@ final class PromiseTests: XCTestCase {
                 }
                 promises.append(promise)
             }
-
+            
             for promise in promises {
                 delay(time: 0) {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+                    let finallyExpectation = PromiseExpectation(description: "finallyExpectation")
 
                     var resolveCount = 0
                     var rejectCount = 0
 
                     promise.then { _ in
                         resolveCount += 1
-                    }.catch { _ in
+                        expectation.fulfill()
+                    }.catch { _ -> Void in
                         rejectCount += 1
+                        expectation.fulfill()
                     }.finally {
                         XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
-                        expectation.fulfill()
+                        finallyExpectation.fulfill()
                     }
 
-                    self.wait(for: [expectation], timeout: 2, enforceOrder: true)
+                    self.wait(for: [expectation, finallyExpectation], timeout: 2, enforceOrder: true)
                 }
             }
         }
@@ -1223,6 +1238,7 @@ final class PromiseTests: XCTestCase {
                 delay(time: 0) {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
                     let expectation1 = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
+                    let finallyExpectation = PromiseExpectation(description: "finallyExpectation")
 
                     var resolveCount = 0
                     var rejectCount = 0
@@ -1233,14 +1249,16 @@ final class PromiseTests: XCTestCase {
                         }
                         .then { _ in
                             resolveCount += 1
-                        }.catch { _ in
+                            expectation1.fulfill()
+                        }.catch { _ -> Void in
                             rejectCount += 1
+                            expectation1.fulfill()
                         }.finally {
                             XCTAssertEqual(resolveCount + rejectCount, 1, "Only one of resolve or reject should succeed")
-                            expectation1.fulfill()
+                            finallyExpectation.fulfill()
                         }
 
-                    self.wait(for: [expectation, expectation1], timeout: 2, enforceOrder: true)
+                    self.wait(for: [expectation, expectation1, finallyExpectation], timeout: 2, enforceOrder: true)
                 }
             }
         }
