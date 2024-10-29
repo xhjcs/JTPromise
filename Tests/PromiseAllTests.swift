@@ -32,9 +32,9 @@ final class PromiseAllTests: XCTestCase {
     func testAsyncPromiseAllWithArraySuccess() {
         let promise1 = Promise<Int>(resolve: 1)
         let promise2 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(2)
-            })
+            }
         }
         let promise3 = Promise<Int>(resolve: 3)
 
@@ -133,9 +133,9 @@ final class PromiseAllTests: XCTestCase {
         let promiseA = Promise<String>(resolve: "A")
         let promiseB = Promise<Int>(resolve: 2)
         let promiseC = Promise<Bool> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            delay(time: 0.2){
                 resolve(true)
-            })
+            }
         }
 
         let allPromise = Promise<(String, Int, Bool)>.all(promiseA, promiseB, promiseC)
@@ -156,14 +156,14 @@ final class PromiseAllTests: XCTestCase {
     func testAsyncErrorPromiseAllWithDifferentTypes() {
         let promiseA = Promise<String>(resolve: "A")
         let promiseB = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 reject(TestError.testFailed)
-            })
+            }
         }
         let promiseC = Promise<Bool> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            delay(time: 0.2) {
                 resolve(true)
-            })
+            }
         }
 
         let allPromise = Promise<(String, Int, Bool)>.all(promiseA, promiseB, promiseC)
@@ -182,9 +182,9 @@ final class PromiseAllTests: XCTestCase {
     func testAsyncPromiseAllCombineWithDifferentTypes() {
         let promise1 = Promise<Int>(resolve: 1)
         let promise2 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            delay(time: 0.2) {
                 resolve(2)
-            })
+            }
         }
         let promise3 = Promise<Int> { resolve, _ in
             resolve(2)
@@ -212,9 +212,9 @@ final class PromiseAllTests: XCTestCase {
             reject(TestError.testFailed)
         }
         let promise3 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            delay(time: 0.2) {
                 resolve(2)
-            })
+            }
         }
         let promise4 = Promise<Int> { resolve, _ in
             resolve(5)
@@ -236,9 +236,9 @@ final class PromiseAllTests: XCTestCase {
     func testAsyncCatchErrorPromiseAllCombineWithDifferentTypes() {
         let promise1 = Promise<Int>(resolve: 1)
         let promise2 = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            delay(time: 0.2) {
                 reject(TestError.testFailed)
-            })
+            }
         }
         let promise3 = Promise<Int> { resolve, _ in
             resolve(2)
@@ -266,9 +266,9 @@ final class PromiseAllTests: XCTestCase {
     func testFinallyPromiseAllCombineWithDifferentTypes() {
         let promise1 = Promise<Int>(resolve: 1)
         let promise2 = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            delay(time: 0.2) {
                 reject(TestError.testFailed)
-            })
+            }
         }
         let promise3 = Promise<Int> { resolve, _ in
             resolve(2)
@@ -306,7 +306,7 @@ final class PromiseAllTests: XCTestCase {
         var promises: [Promise<Int>] = []
         for i in 0 ..< promiseCount {
             promises.append(Promise<Int> { resolve, _ in
-                DispatchQueue.global().asyncAfter(deadline: .now() + Double.random(in: 0.1 ... 0.5)) {
+                delay(time: Double.random(in: 0.1 ... 0.5)) {
                     resolve(i)
                 }
             })
@@ -333,8 +333,8 @@ final class PromiseAllTests: XCTestCase {
         weak var weakPromise: Promise<[Int]>?
 
         autoreleasepool {
-            let promise1 = Promise<Int> { resolve, _ in DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) { resolve(1) } }
-            let promise2 = Promise<Int> { resolve, _ in DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) { resolve(2) } }
+            let promise1 = Promise<Int> { resolve, _ in delay(time: 0.1) { resolve(1) } }
+            let promise2 = Promise<Int> { resolve, _ in delay(time: 0.2) { resolve(2) } }
 
             let allPromise = Promise.all([promise1, promise2])
             weakPromise = allPromise
@@ -350,7 +350,9 @@ final class PromiseAllTests: XCTestCase {
         }
 
         wait(for: [expectation, finallyExpectation], timeout: 1.0, enforceOrder: true)
-        XCTAssertNil(weakPromise, "The Promise.all should have been deallocated")
+        delay(time: 1) {
+            XCTAssertNil(weakPromise, "The Promise.all should have been deallocated")
+        }
     }
 
     // MARK: - 多个线程同时监听一个 Promise.all 时的行为测试
@@ -361,13 +363,13 @@ final class PromiseAllTests: XCTestCase {
         let finallyExpectation1 = PromiseExpectation(description: "Concurrent promises handling")
         let finallyExpectation2 = PromiseExpectation(description: "Concurrent promises handling")
 
-        let promise1 = Promise<Int> { resolve, _ in DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) { resolve(1) } }
-        let promise2 = Promise<Int> { resolve, _ in DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) { resolve(2) } }
+        let promise1 = Promise<Int> { resolve, _ in delay(time: 0.1) { resolve(1) } }
+        let promise2 = Promise<Int> { resolve, _ in delay(time: 0.2) { resolve(2) } }
 
         let allPromise = Promise.all([promise1, promise2])
 
         // 第一个监听者
-        DispatchQueue.global().async {
+        delay(time: 0) {
             allPromise.then { results in
                 XCTAssertEqual(results, [1, 2], "First listener should fulfill with correct values")
                 expectation1.fulfill()
@@ -379,7 +381,7 @@ final class PromiseAllTests: XCTestCase {
         }
 
         // 第二个监听者
-        DispatchQueue.global().async {
+        delay(time: 0) {
             allPromise.then { results in
                 XCTAssertEqual(results, [1, 2], "Second listener should fulfill with correct values")
                 expectation2.fulfill()
@@ -397,22 +399,22 @@ final class PromiseAllTests: XCTestCase {
         for _ in 0..<100 {
             var promises = [Promise<Int>]()
             promises.append(Promise { resolve, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(10)
                 }
             })
             promises.append(Promise { resolve, reject in
-                DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                delay(time: 0.1) {
                     resolve(101)
                 }
             })
             promises.append(Promise { resolve, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     reject(TestError.testFailed)
                 }
             })
             promises.append(Promise { resolve, reject in
-                DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                delay(time: 0.1) {
                     reject(TestError.testFailed)
                 }
             })
@@ -437,22 +439,22 @@ final class PromiseAllTests: XCTestCase {
         for _ in 0..<100 {
             var promises = [Promise<Int>]()
             promises.append(Promise { resolve, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(10)
                 }
             })
             promises.append(Promise { resolve, reject in
-                DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                delay(time: 0.1) {
                     resolve(101)
                 }
             })
             promises.append(Promise { resolve, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(102)
                 }
             })
             promises.append(Promise { resolve, reject in
-                DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                delay(time: 0.1) {
                     resolve(103)
                 }
             })
@@ -486,7 +488,7 @@ final class PromiseAllTests: XCTestCase {
         // 创建多个 promise，每个 promise 都会在不同的线程中调用 resolve。
         for i in 0 ..< promiseCount {
             promises.append(Promise<Int> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(i)
                 }
             })
@@ -518,7 +520,7 @@ final class PromiseAllTests: XCTestCase {
         // 创建多个 promise，其中一个会被拒绝
         for i in 0 ..< promiseCount {
             promises.append(Promise<Int> { resolve, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     if i == 42 { // 随便选择一个 Promise 进行拒绝
                         reject(TestError.testFailed)
                     } else {
@@ -557,7 +559,7 @@ final class PromiseAllTests: XCTestCase {
         // 创建多个 promise，其中一部分会成功，另一部分会被拒绝
         for i in 0 ..< promiseCount {
             promises.append(Promise<Int> { resolve, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     if i % 2 == 0 { // 偶数 Promise 成功
                         resolve(i)
                     } else { // 奇数 Promise 被拒绝
@@ -589,37 +591,37 @@ final class PromiseAllTests: XCTestCase {
 
             // 创建六个 Promise，每个都在不同线程中调用 resolve。
             let promiseA = Promise<Int> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(1)
                 }
             }
 
             let promiseB = Promise<String> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve("B")
                 }
             }
 
             let promiseC = Promise<Bool> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(true)
                 }
             }
 
             let promiseD = Promise<Double> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(4.0)
                 }
             }
 
             let promiseE = Promise<[String]> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(["E"])
                 }
             }
 
             let promiseF = Promise<[Int: String]> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve([1: "F"])
                 }
             }
@@ -654,37 +656,37 @@ final class PromiseAllTests: XCTestCase {
 
             // 创建六个 Promise，其中一个会在不同线程中调用 reject。
             let promiseA = Promise<Int> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(1)
                 }
             }
 
             let promiseB = Promise<String> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve("B")
                 }
             }
 
             let promiseC = Promise<Bool> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(true)
                 }
             }
 
             let promiseD = Promise<Double> { _, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     reject(TestError.testFailed)
                 }
             }
 
             let promiseE = Promise<[String]> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(["E"])
                 }
             }
 
             let promiseF = Promise<[Int: String]> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve([1: "F"])
                 }
             }
@@ -715,37 +717,37 @@ final class PromiseAllTests: XCTestCase {
 
         // 创建六个 Promise，其中一部分会被拒绝，一部分会成功。
         let promiseA = Promise<Int> { resolve, _ in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 resolve(1)
             }
         }
 
         let promiseB = Promise<String> { resolve, _ in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 resolve("B")
             }
         }
 
         let promiseC = Promise<Bool> { resolve, _ in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 resolve(true)
             }
         }
 
         let promiseD = Promise<Double> { _, reject in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 reject(TestError.testFailed)
             }
         }
 
         let promiseE = Promise<[String]> { resolve, _ in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 resolve(["E"])
             }
         }
 
         let promiseF = Promise<[Int: String]> { _, reject in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 reject(TestError.testFailed)
             }
         }

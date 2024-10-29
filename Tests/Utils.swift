@@ -16,7 +16,7 @@ enum TestError: Error, Equatable {
 class PromiseExpectation: XCTestExpectation {
     private var fulfillCount = 0
     private let maxFulfillCount: Int
-    private let lock = NSLock()  // 添加一个锁来确保线程安全
+    private let lock = NSLock() // 添加一个锁来确保线程安全
 
     init(description: String, maxFulfillCount: Int = 1) {
         self.maxFulfillCount = maxFulfillCount
@@ -24,7 +24,7 @@ class PromiseExpectation: XCTestExpectation {
     }
 
     override func fulfill() {
-        lock.lock()  // 加锁，确保 fulfillCount 的操作是原子的
+        lock.lock() // 加锁，确保 fulfillCount 的操作是原子的
         fulfillCount += 1
         if fulfillCount > maxFulfillCount {
             lock.unlock()
@@ -37,5 +37,8 @@ class PromiseExpectation: XCTestExpectation {
 }
 
 func delay(time: TimeInterval, task: @escaping () -> Void) {
-    DispatchQueue.global().asyncAfter(deadline: .now() + time, execute: task)
+    Thread.detachNewThread {
+        Thread.sleep(forTimeInterval: time)
+        task()
+    }
 }

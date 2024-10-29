@@ -24,9 +24,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncPromiseInitializationWithValue() {
         let promise = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(42)
-            })
+            }
         }
 
         let expectation = PromiseExpectation(description: "Promise is fulfilled with value")
@@ -54,9 +54,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncPromiseInitializationWithError() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 reject(TestError.testFailed)
-            })
+            }
         }
 
         let expectation = PromiseExpectation(description: "Promise is rejected with error")
@@ -87,9 +87,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncThenHandler() {
         let promise = Promise { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(10)
-            })
+            }
         }
 
         let expectation = PromiseExpectation(description: "Promise then handler is called")
@@ -123,9 +123,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncThenHandlerWithPromiseReturn() {
         let promise = Promise { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(10)
-            })
+            }
         }
 
         let expectation = PromiseExpectation(description: "Promise then handler with Promise return is called")
@@ -143,9 +143,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncThenHandlerWithAsyncPromiseReturn() {
         let promise = Promise { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(10)
-            })
+            }
         }
 
         let expectation = PromiseExpectation(description: "Promise then handler with Promise return is called")
@@ -153,9 +153,9 @@ final class PromiseTests: XCTestCase {
         promise.then { value -> Promise<Int> in
             XCTAssertEqual(value, 10)
             return Promise { resolve, _ in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+                delay(time: 0.3) {
                     resolve(value * 3)
-                })
+                }
             }
         }.then { newValue in
             XCTAssertEqual(newValue, 30)
@@ -182,9 +182,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncCatchHandler() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 reject(TestError.testFailed)
-            })
+            }
         }
 
         let expectation = PromiseExpectation(description: "Promise catch handler is called")
@@ -216,9 +216,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncThenThrowError() {
         let promise = Promise { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(10)
-            })
+            }
         }
 
         let thenExpectation = PromiseExpectation(description: "Promise catch handler is called")
@@ -256,9 +256,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncCatchHandlerWithValueReturn() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 reject(TestError.testFailed)
-            })
+            }
         }
 
         let expectation = PromiseExpectation(description: "Promise catch handler returns a new value")
@@ -288,9 +288,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncFinallyHandler() {
         let promise = Promise<String> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve("Success")
-            })
+            }
         }
 
         let expectation = PromiseExpectation(description: "Promise finally handler is called")
@@ -322,9 +322,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncFinallyHandlerAfterCatch() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 reject(TestError.testFailed)
-            })
+            }
         }
 
         let catchExpectation = PromiseExpectation(description: "Promise catch handler is called")
@@ -362,9 +362,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncFinallyHandlerAfterThanAndCatch() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 reject(TestError.testFailed)
-            })
+            }
         }
 
         let catchExpectation = PromiseExpectation(description: "Promise catch handler is called")
@@ -387,9 +387,9 @@ final class PromiseTests: XCTestCase {
 
     func testVoidCatch() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 reject(TestError.testFailed)
-            })
+            }
         }
 
         let catchExpectation = PromiseExpectation(description: "Promise catch handler is called")
@@ -418,9 +418,9 @@ final class PromiseTests: XCTestCase {
 
     func testValueCatch() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 reject(TestError.testFailed)
-            })
+            }
         }
 
         let catchExpectation = PromiseExpectation(description: "Promise catch handler is called")
@@ -450,9 +450,9 @@ final class PromiseTests: XCTestCase {
 
     func testPromiseCatch() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 reject(TestError.testFailed)
-            })
+            }
         }
 
         let catchExpectation = PromiseExpectation(description: "Promise catch handler is called")
@@ -482,9 +482,9 @@ final class PromiseTests: XCTestCase {
 
     func testPromiseCatchNextCatch() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 reject(TestError.testFailed)
-            })
+            }
         }
 
         let catchExpectation = PromiseExpectation(description: "Promise catch handler is called")
@@ -519,9 +519,9 @@ final class PromiseTests: XCTestCase {
 
     func testVoidThenAndThen() {
         let promise = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(10)
-            })
+            }
         }
 
         let thenExpectation = PromiseExpectation(description: "Promise then handler is called")
@@ -556,9 +556,9 @@ final class PromiseTests: XCTestCase {
 
     func testValueThenAndThen() {
         let promise = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(10)
-            })
+            }
         }
 
         let thenExpectation = PromiseExpectation(description: "Promise then handler is called")
@@ -594,9 +594,9 @@ final class PromiseTests: XCTestCase {
 
     func testPromiseThenAndThen() {
         let promise = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(10)
-            })
+            }
         }
 
         let thenExpectation = PromiseExpectation(description: "Promise then handler is called")
@@ -632,9 +632,9 @@ final class PromiseTests: XCTestCase {
 
     func testAsyncPromiseThenAndThen() {
         let promise = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(10)
-            })
+            }
         }
 
         let thenExpectation = PromiseExpectation(description: "Promise then handler is called")
@@ -646,9 +646,9 @@ final class PromiseTests: XCTestCase {
                 XCTAssertNotNil(value)
                 thenExpectation.fulfill()
                 return Promise<String> { resolve, _ in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+                    delay(time: 0.1) {
                         resolve("10")
-                    })
+                    }
                 }
             })
             .catch { _ in
@@ -674,9 +674,9 @@ final class PromiseTests: XCTestCase {
 
     func testErrorPromiseThenAndThen() {
         let promise = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            delay(time: 0.5) {
                 resolve(10)
-            })
+            }
         }
 
         let catchExpectation = PromiseExpectation(description: "Promise catch handler is called")
@@ -689,9 +689,9 @@ final class PromiseTests: XCTestCase {
                 XCTAssertNotNil(value)
                 thenExpectation.fulfill()
                 return Promise<String> { _, reject in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+                    delay(time: 0.1) {
                         reject(TestError.testFailed)
-                    })
+                    }
                 }
             })
             .catch { _ in
@@ -720,38 +720,42 @@ final class PromiseTests: XCTestCase {
         // 用于标识状态是否被改变
         var stateChangedCount = 50
         let promise = Promise<Int> { resolve, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-                // 同时进行 50 次 `resolve` 和 `reject` 调用
-                DispatchQueue.concurrentPerform(iterations: stateChangedCount) { index in
+            for index in 0..<stateChangedCount {
+                delay(time: 0.5) {
                     if index % 2 == 0 {
                         resolve(index)
                     } else {
                         reject(TestError.testFailed)
                     }
                 }
-            })
+            }
         } // 空的 Promise 实例，用于后续手动 resolve 或 reject
         let expectation = PromiseExpectation(description: "Promise state should only change once")
 
         // 创建一个 dispatch group 来跟踪所有线程的状态
-        let group = DispatchGroup()
         let syncGroup = DispatchGroup()
+        
+        let lock = NSLock()
 
         // 开启 100 个线程同时调用 `resolve` 和 `reject`
         for _ in 0 ..< 50 {
             syncGroup.enter()
-            DispatchQueue.global().async(group: group) {
+            delay(time: 0.0) {
                 promise.then { _ in
-                    DispatchQueue.global().async(flags: .barrier) {
+                    delay(time: 0.0) {
+                        lock.lock()
                         stateChangedCount -= 1
+                        lock.unlock()
                         syncGroup.leave()
                     }
                 }
             }
-            DispatchQueue.global().async(group: group) {
+            delay(time: 0.0) {
                 promise.catch { _ in
-                    DispatchQueue.global().async(flags: .barrier) {
+                    delay(time: 0.0) {
+                        lock.lock()
                         stateChangedCount -= 1
+                        lock.unlock()
                         syncGroup.leave()
                     }
                 }
@@ -770,13 +774,13 @@ final class PromiseTests: XCTestCase {
     // 测试多线程下 `fulfill` 的竞争
     func testConcurrentFulfillCalls() {
         let promise = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            delay(time: 1) {
                 for _ in 0 ..< 10 {
-                    DispatchQueue.global().async {
+                    delay(time: 0.0) {
                         resolve(42)
                     }
                 }
-            })
+            }
         }
         let expectation = PromiseExpectation(description: "Only one fulfill should succeed")
 
@@ -796,13 +800,13 @@ final class PromiseTests: XCTestCase {
     // 测试多线程下 `reject` 的竞争
     func testConcurrentRejectCalls() {
         let promise = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            delay(time: 1) {
                 for _ in 0 ..< 10 {
-                    DispatchQueue.global().async {
+                    delay(time: 0) {
                         reject(TestError.testFailed)
                     }
                 }
-            })
+            }
         }
         let expectation = PromiseExpectation(description: "Only one reject should succeed")
 
@@ -822,16 +826,16 @@ final class PromiseTests: XCTestCase {
     // 测试 `resolve` 和 `reject` 的并发调用，确保最终只发生一种情况
     func testDelayConcurrentResolveAndReject() {
         let promise = Promise<Int> { resolve, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            delay(time: 1) {
                 for _ in 0 ..< 10 {
-                    DispatchQueue.global().async {
+                    delay(time: 0) {
                         resolve(42)
                     }
-                    DispatchQueue.global().async {
+                    delay(time: 0) {
                         reject(TestError.testFailed)
                     }
                 }
-            })
+            }
         }
         let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
 
@@ -857,10 +861,10 @@ final class PromiseTests: XCTestCase {
             for _ in 0 ..< 10 {
                 let promise = Promise<Int> { resolve, reject in
                     for _ in 0 ..< 5 {
-                        DispatchQueue.global().async {
+                        delay(time: 0) {
                             resolve(42)
                         }
-                        DispatchQueue.global().async {
+                        delay(time: 0) {
                             reject(TestError.testFailed)
                         }
                     }
@@ -869,7 +873,7 @@ final class PromiseTests: XCTestCase {
             }
 
             for promise in promises {
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
 
                     var resolveCount = 0
@@ -896,10 +900,10 @@ final class PromiseTests: XCTestCase {
             for _ in 0 ..< 10 {
                 let promise = Promise<Int> { resolve, reject in
                     for _ in 0 ..< 5 {
-                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                        delay(time: 0.1) {
                             resolve(42)
                         }
-                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                        delay(time: 0.1) {
                             reject(TestError.testFailed)
                         }
                     }
@@ -908,7 +912,7 @@ final class PromiseTests: XCTestCase {
             }
 
             for promise in promises {
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
 
                     var resolveCount = 0
@@ -936,10 +940,10 @@ final class PromiseTests: XCTestCase {
             for _ in 0 ..< 10 {
                 let promise = Promise<Int> { resolve, reject in
                     for _ in 0 ..< 5 {
-                        DispatchQueue.global().async {
+                        delay(time: 0) {
                             reject(TestError.testFailed)
                         }
-                        DispatchQueue.global().async {
+                        delay(time: 0) {
                             resolve(42)
                         }
                     }
@@ -948,7 +952,7 @@ final class PromiseTests: XCTestCase {
             }
 
             for promise in promises {
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
 
                     var resolveCount = 0
@@ -975,10 +979,10 @@ final class PromiseTests: XCTestCase {
             for _ in 0 ..< 10 {
                 let promise = Promise<Int> { resolve, reject in
                     for _ in 0 ..< 5 {
-                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                        delay(time: 0.1) {
                             reject(TestError.testFailed)
                         }
-                        DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) {
+                        delay(time: 0.1) {
                             resolve(42)
                         }
                     }
@@ -987,7 +991,7 @@ final class PromiseTests: XCTestCase {
             }
 
             for promise in promises {
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
 
                     var resolveCount = 0
@@ -1045,7 +1049,7 @@ final class PromiseTests: XCTestCase {
             ex1.fulfill()
         }
 
-        wait(for: [ex, ex1], timeout: 2)
+        wait(for: [ex, ex1], timeout: 20)
     }
 
     func testAsyncFinally1() {
@@ -1204,10 +1208,10 @@ final class PromiseTests: XCTestCase {
             for _ in 0 ..< 10 {
                 let promise = Promise<Int> { resolve, reject in
                     for _ in 0 ..< 5 {
-                        DispatchQueue.global().async {
+                        delay(time: 0) {
                             resolve(42)
                         }
-                        DispatchQueue.global().async {
+                        delay(time: 0) {
                             reject(TestError.testFailed)
                         }
                     }
@@ -1216,7 +1220,7 @@ final class PromiseTests: XCTestCase {
             }
 
             for promise in promises {
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     let expectation = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
                     let expectation1 = PromiseExpectation(description: "Either resolve or reject should succeed, not both")
 

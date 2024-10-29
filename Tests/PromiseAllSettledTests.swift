@@ -57,9 +57,9 @@ final class PromiseAllSettledTests: XCTestCase {
         let promise1 = Promise<Int>(reject: TestError.testFailed)
             .catch { _ in
                 Promise<Int> { resolve, _ in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                    delay(time: 0.5) {
                         resolve(1)
-                    })
+                    }
                 }
             }
         let promise2 = Promise<Int>(resolve: 2)
@@ -89,22 +89,22 @@ final class PromiseAllSettledTests: XCTestCase {
         // 创建多个 Promise，每个在不同线程中调用 resolve 或 reject，并将其添加到数组中。
         let promises: [Promise<Int>] = [
             Promise { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(1)
                 }
             },
             Promise { _, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     reject(TestError.testFailed)
                 }
             },
             Promise { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(3)
                 }
             },
             Promise { _, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     reject(TestError.testFailed)
                 }
             },
@@ -176,17 +176,17 @@ final class PromiseAllSettledTests: XCTestCase {
 
         let promises: [Promise<Int>] = [
             Promise { _, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     reject(TestError.testFailed)
                 }
             },
             Promise { _, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     reject(TestError.testFailed)
                 }
             },
             Promise { _, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     reject(TestError.testFailed)
                 }
             },
@@ -222,17 +222,17 @@ final class PromiseAllSettledTests: XCTestCase {
 
         let promises: [Promise<Int>] = [
             Promise { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(1)
                 }
             },
             Promise { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(2)
                 }
             },
             Promise { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(3)
                 }
             },
@@ -270,37 +270,37 @@ final class PromiseAllSettledTests: XCTestCase {
 
         // 创建六个 Promise，每个都在不同线程中调用 resolve 或 reject。
         let promiseA = Promise<Int> { resolve, _ in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 resolve(1)
             }
         }
 
         let promiseB = Promise<String> { resolve, _ in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 resolve("B")
             }
         }
 
         let promiseC = Promise<Bool> { resolve, _ in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 resolve(true)
             }
         }
 
         let promiseD = Promise<Double> { _, reject in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 reject(TestError.testFailed)
             }
         }
 
         let promiseE = Promise<[String]> { resolve, _ in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 resolve(["E"])
             }
         }
 
         let promiseF = Promise<[Int: String]> { _, reject in
-            DispatchQueue.global().async {
+            delay(time: 0) {
                 reject(TestError.testFailed)
             }
         }
@@ -370,37 +370,37 @@ final class PromiseAllSettledTests: XCTestCase {
             let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
 
             let promiseA = Promise<Int> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(1)
                 }
             }
 
             let promiseB = Promise<String> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve("B")
                 }
             }
 
             let promiseC = Promise<Bool> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(true)
                 }
             }
 
             let promiseD = Promise<Double> { _, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     reject(TestError.testFailed)
                 }
             }
 
             let promiseE = Promise<[String]> { resolve, _ in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     resolve(["E"])
                 }
             }
 
             let promiseF = Promise<[Int: String]> { _, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     reject(TestError.testFailed)
                 }
             }

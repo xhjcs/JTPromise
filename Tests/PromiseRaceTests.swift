@@ -12,9 +12,9 @@ final class PromiseRaceTests: XCTestCase {
     // MARK: - Test Promise.race
 
     func testPromiseRaceSuccess() {
-        let promise1 = Promise<Int> { resolve, _ in DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) { resolve(1) } }
-        let promise2 = Promise<Int> { resolve, _ in DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) { resolve(2) } }
-        let promise3 = Promise<Int> { resolve, _ in DispatchQueue.global().asyncAfter(deadline: .now() + 0.8) { resolve(3) } }
+        let promise1 = Promise<Int> { resolve, _ in delay(time: 0.5) { resolve(1) } }
+        let promise2 = Promise<Int> { resolve, _ in delay(time: 0.2) { resolve(2) } }
+        let promise3 = Promise<Int> { resolve, _ in delay(time: 0.8) { resolve(3) } }
 
         let racePromise = Promise.race([promise1, promise2, promise3])
         let expectation = PromiseExpectation(description: "Promise.race should resolve with the first resolved value")
@@ -30,9 +30,9 @@ final class PromiseRaceTests: XCTestCase {
     }
 
     func testArrayPromiseRaceFailure() {
-        let promise1 = Promise<Int> { resolve, _ in DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) { resolve(1) } }
-        let promise2 = Promise<Int> { resolve, _ in DispatchQueue.global().asyncAfter(deadline: .now() + 0.8) { resolve(2) } }
-        let promise3 = Promise<Int> { _, reject in DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) { reject(TestError.testFailed) } }
+        let promise1 = Promise<Int> { resolve, _ in delay(time: 0.5) { resolve(1) } }
+        let promise2 = Promise<Int> { resolve, _ in delay(time: 0.8) { resolve(2) } }
+        let promise3 = Promise<Int> { _, reject in delay(time: 0.2) { reject(TestError.testFailed) } }
 
         let racePromise = Promise.race([promise1, promise2, promise3])
         let expectation = PromiseExpectation(description: "Promise.race should resolve with the first resolved value")
@@ -48,9 +48,9 @@ final class PromiseRaceTests: XCTestCase {
     }
 
     func testPromiseRaceFailure() {
-        let promise1 = Promise<Int> { _, reject in DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) { reject(NSError(domain: "TestError", code: 1, userInfo: nil)) } }
-        let promise2 = Promise<Int> { _, reject in DispatchQueue.global().asyncAfter(deadline: .now() + 0.2) { reject(NSError(domain: "TestError", code: 2, userInfo: nil)) } }
-        let promise3 = Promise<Int> { _, reject in DispatchQueue.global().asyncAfter(deadline: .now() + 0.8) { reject(NSError(domain: "TestError", code: 3, userInfo: nil)) } }
+        let promise1 = Promise<Int> { _, reject in delay(time: 0.5) { reject(NSError(domain: "TestError", code: 1, userInfo: nil)) } }
+        let promise2 = Promise<Int> { _, reject in delay(time: 0.2) { reject(NSError(domain: "TestError", code: 2, userInfo: nil)) } }
+        let promise3 = Promise<Int> { _, reject in delay(time: 0.8) { reject(NSError(domain: "TestError", code: 3, userInfo: nil)) } }
 
         let racePromise = Promise.race([promise1, promise2, promise3])
         let expectation = PromiseExpectation(description: "Promise.race should reject with the first rejected error")
@@ -72,21 +72,26 @@ final class PromiseRaceTests: XCTestCase {
 
         // 创建多个 Promise，每个在不同线程中调用 resolve 或 reject，并将其添加到数组中。
         var promises = [Promise<Int>]()
+        let lock = NSLock()
         for i in 0 ..< 100 {
             promises.append(Promise { resolve, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     if i % 2 == 0 {
-                        DispatchQueue.global().sync(flags: .barrier) {
+                        delay(time: 0) {
+                            lock.lock()
                             if isSuccess == nil {
                                 isSuccess = true
                             }
+                            lock.unlock()
                         }
                         resolve(i)
                     } else {
-                        DispatchQueue.global().sync(flags: .barrier) {
+                        delay(time: 0) {
+                            lock.lock()
                             if isSuccess == nil {
                                 isSuccess = false
                             }
+                            lock.lock()
                         }
                         reject(TestError.testFailed)
                     }
@@ -123,19 +128,28 @@ final class PromiseRaceTests: XCTestCase {
         var isSuccess: Bool? = true
 
         // 创建多个 Promise，每个在不同线程中调用 resolve 或 reject，并将其添加到数组中。
+        let lock = NSLock()
         var promises = [Promise<Int>]()
         for i in 0 ..< 100 {
             promises.append(Promise { resolve, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     if i % 2 == 1 {
-                        DispatchQueue.global().sync(flags: .barrier) {
+                        delay(time: 0) {
+                            lock.lock()
+                            defer {
+                                lock.unlock()
+                            }
                             if isSuccess == nil {
                                 isSuccess = true
                             }
                         }
                         resolve(i)
                     } else {
-                        DispatchQueue.global().sync(flags: .barrier) {
+                        delay(time: 0) {
+                            lock.lock()
+                            defer {
+                                lock.unlock()
+                            }
                             if isSuccess == nil {
                                 isSuccess = false
                             }

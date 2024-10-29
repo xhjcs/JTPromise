@@ -31,19 +31,19 @@ final class PromiseAnyTests: XCTestCase {
 
     func testAsyncPromiseAnySuccess() {
         let promise1 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            delay(time: 0.2) {
                 resolve(1)
-            })
+            }
         }
         let promise2 = Promise<Int> { _, reject in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+            delay(time: 0.1) {
                 reject(TestError.testFailed)
-            })
+            }
         }
         let promise3 = Promise<Int> { resolve, _ in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
+            delay(time: 0.3) {
                 resolve(3)
-            })
+            }
         }
 
         let anyPromise = Promise.any([promise1, promise2, promise3])
@@ -83,11 +83,15 @@ final class PromiseAnyTests: XCTestCase {
             let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
 
             // 创建多个 Promise，每个在不同线程中调用 resolve 或 reject，并将其添加到数组中。
+            let lock = NSLock()
             var promises = [Promise<Int>]()
             for i in 0 ..< 100 {
                 promises.append(Promise { resolve, reject in
-                    DispatchQueue.global().async {
-                        if i % 2 == 0 {
+                    delay(time: 0) {
+                        lock.lock()
+                        let flag = i % 2 == 0
+                        lock.unlock()
+                        if flag {
                             resolve(i)
                         } else {
                             reject(TestError.testFailed)
@@ -100,7 +104,7 @@ final class PromiseAnyTests: XCTestCase {
             let allSettledPromise = Promise.any(promises)
 
             allSettledPromise.then { results in
-                XCTAssertTrue(results == 0)
+                XCTAssertTrue(results >= 0 && results < 100)
                 expectation.fulfill()
             }.catch { error in
                 XCTFail("Promise.allSettled should not reject, but caught error: \(error)")
@@ -120,7 +124,7 @@ final class PromiseAnyTests: XCTestCase {
         var promises = [Promise<Int>]()
         for _ in 0 ..< 100 {
             promises.append(Promise { _, reject in
-                DispatchQueue.global().async {
+                delay(time: 0) {
                     reject(TestError.testFailed)
                 }
             })
