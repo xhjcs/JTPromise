@@ -1064,7 +1064,7 @@ final class PromiseTests: XCTestCase {
             ex1.fulfill()
         }
 
-        wait(for: [ex, ex1], timeout: 20)
+        wait(for: [ex, ex1], timeout: 2)
     }
 
     func testAsyncFinally1() {

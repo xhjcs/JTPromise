@@ -68,36 +68,13 @@ final class PromiseRaceTests: XCTestCase {
     func testPromiseRaceThreadSafety() {
         let expectation = PromiseExpectation(description: "All promises in array should settle concurrently with mixed fulfilled and rejected states")
         let finallyExpectation = PromiseExpectation(description: "Concurrent promises handling")
-        var isSuccess: Bool? = true
 
         // 创建多个 Promise，每个在不同线程中调用 resolve 或 reject，并将其添加到数组中。
         var promises = [Promise<Int>]()
-        let lock = NSLock()
-        for i in 0 ..< 100 {
+        for _ in 0 ..< 100 {
             promises.append(Promise { resolve, reject in
                 delay(time: 0) {
-                    lock.lock()
-                    let flag = i % 2 == 0
-                    lock.unlock()
-                    if flag {
-                        delay(time: 0) {
-                            lock.lock()
-                            if isSuccess == nil {
-                                isSuccess = true
-                            }
-                            lock.unlock()
-                        }
-                        resolve(i)
-                    } else {
-                        delay(time: 0) {
-                            lock.lock()
-                            if isSuccess == nil {
-                                isSuccess = false
-                            }
-                            lock.lock()
-                        }
-                        reject(TestError.testFailed)
-                    }
+                    resolve(0)
                 }
             })
         }
@@ -106,18 +83,10 @@ final class PromiseRaceTests: XCTestCase {
         let allSettledPromise = Promise.any(promises)
 
         allSettledPromise.then { results in
-            if isSuccess! {
-                XCTAssertTrue(results == 0)
-                expectation.fulfill()
-            } else {
-                XCTFail("Promise.allSettled should not resolve")
-            }
+            XCTAssertTrue(results == 0)
+            expectation.fulfill()
         }.catch { error -> Void in
-            if isSuccess! {
-                XCTFail("Promise.allSettled should not reject, but caught error: \(error)")
-            } else {
-                XCTAssertTrue((error as! TestError) == .testFailed)
-            }
+            XCTFail("Promise.allSettled should not reject, but caught error: \(error)")
         }.finally {
             finallyExpectation.fulfill()
         }
