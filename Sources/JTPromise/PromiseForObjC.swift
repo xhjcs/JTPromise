@@ -63,11 +63,7 @@ public final class __PromiseForObjC__: NSObject {
     }
 
     @discardableResult
-    @objc public func then() -> (_ handler: @escaping (_ value: AnyObject?) -> AnyObject?) -> __PromiseForObjC__ {
-        return _then
-    }
-
-    private func _then(_ handler: @escaping (_ value: AnyObject?) -> AnyObject?) -> __PromiseForObjC__ {
+    @objc public func then(_ handler: @escaping (_ value: AnyObject?) -> AnyObject?) -> __PromiseForObjC__ {
         let swiftPromise = promise.then { value in
             let nextValue = handler(value)
             if let nextPromise = nextValue as? __PromiseForObjC__ {
@@ -79,11 +75,7 @@ public final class __PromiseForObjC__: NSObject {
     }
 
     @discardableResult
-    @objc public func `catch`() -> (_ handler: @escaping (_ error: Error) -> AnyObject?) -> __PromiseForObjC__ {
-        return _catch
-    }
-
-    private func _catch(_ handler: @escaping (_ error: Error) -> AnyObject?) -> __PromiseForObjC__ {
+    @objc public func `catch`(_ handler: @escaping (_ error: Error) -> AnyObject?) -> __PromiseForObjC__ {
         let swiftPromise = promise.catch { error -> Promise<AnyObject?> in
             let nextValue = handler(error)
             if let nextPromise = nextValue as? __PromiseForObjC__ {
@@ -95,11 +87,7 @@ public final class __PromiseForObjC__: NSObject {
     }
 
     @discardableResult
-    @objc public func finally() -> (_ handler: @escaping () -> Void) -> __PromiseForObjC__ {
-        return _finally
-    }
-
-    private func _finally(_ handler: @escaping () -> Void) -> __PromiseForObjC__ {
+    @objc public func finally(_ handler: @escaping () -> Void) -> __PromiseForObjC__ {
         return __PromiseForObjC__(promise: promise.finally(handler))
     }
 
