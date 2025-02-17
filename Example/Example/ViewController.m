@@ -31,38 +31,30 @@
                        });
     }];
 
-    promise
-    .finally(^{
+    [[[[[[[[promise finally:^{
         NSLog(@"finally");
-    })
-    .then(^id (NSNumber *value) {
+    }] then:^id _Nullable (NSNumber *value) {
         NSLog(@"then: %@", value);
         return value;
-    })
-    .finally(^{
+    }] finally:^{
         NSLog(@"finally1");
-    })
-    .catch(^id (NSError *error) {
+    }] catch:^id _Nullable (NSError *error) {
         NSLog(@"catch: %@", error);
         return [JTPromise promiseWithExecutor:^(void (^_Nonnull resolve)(id _Nullable), void (^_Nonnull reject)(NSError *_Nonnull)) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                                resolve(@101);
                            });
         }];
-    })
-    .finally(^{
+    }] finally:^{
         NSLog(@"finally2");
-    })
-    .then(^id (NSNumber *value) {
+    }] then:^id _Nullable (NSNumber *value) {
         NSLog(@"then1: %@", value);
         return nil;
-    })
-    .finally(^{
+    }] finally:^{
         NSLog(@"finally3");
-    })
-    .finally(^{
+    }] finally:^{
         NSLog(@"finally4");
-    });
+    }];
 }
 
 @end
