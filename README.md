@@ -317,64 +317,52 @@ JTPromise *promise1 = [JTPromise promiseWithExecutor:^(void (^ _Nonnull resolve)
         }
     }];
 
-promise
-    .then(^id (NSString *result) {
-        // result: 任务完成
-        NSLog(@"结果: %@", result);
-        return nil;
-    })
-    .catch(^id (NSError *error) {
-        NSLog(@"错误: %@", error);
-        return nil;
-    })
-    .finally(^{
-        NSLog(@"任务结束");
-    });
+[[[promise then:^id _Nullable (NSString *result) {
+    // result: Task completed
+    NSLog(@"Result: %@", result);
+    return nil;
+}] catch:^id _Nullable (NSError *error) {
+    NSLog(@"Error: %@", error);
+    return nil;
+}] finally:^{
+    NSLog(@"Task finished");
+}];
 
-promise
-    .then(^id (NSString *result) {
-        // result: 任务完成
-        NSLog(@"结果: %@", result);
-        return @101;
-    })
-    .then(^id (NSNumber *result) {
-        // result: 101
-        NSLog(@"结果: %@", result);
-        return nil;
-    })
-    .catch(^id (NSError *error) {
-        NSLog(@"错误: %@", error);
-        return nil;
-    })
-    .finally(^{
-        NSLog(@"任务结束");
-    });
+[[[[promise then:^id _Nullable (NSString *result) {
+    // result: Task completed
+    NSLog(@"Result: %@", result);
+    return @101;
+}] then:^id _Nullable (NSNumber *result) {
+    // result: 101
+    NSLog(@"Result: %@", result);
+    return nil;
+}] catch:^id _Nullable (NSError *error) {
+    NSLog(@"Error: %@", error);
+    return nil;
+}] finally:^{
+    NSLog(@"Task finished");
+}];
 
-promise
-    .then(^id (NSString *result) {
-        // result: 任务完成
-        NSLog(@"结果: %@", result);
-        return promise1;
-    })
-    .then(^id (NSNumber *result) {
-        // result: 101
-        NSLog(@"结果: %@", result);
-        return nil;
-    })
-    .catch(^id (NSError *error) {
-        NSLog(@"错误: %@", error);
-        return nil;
-    })
-    .finally(^{
-        NSLog(@"任务结束");
-    });
+[[[[promise then:^id _Nullable (NSString *result) {
+    // result: Task completed
+    NSLog(@"Result: %@", result);
+    return promise1;
+}] then:^id _Nullable (NSNumber *result) {
+    // result: 101
+    NSLog(@"Result: %@", result);
+    return nil;
+}] catch:^id _Nullable (NSError *error) {
+    NSLog(@"Error: %@", error);
+    return nil;
+}] finally:^{
+    NSLog(@"Task finished");
+}];
 
-[JTPromise all:@[promise, promise1]]
-    .then(^id (NSArray *result) {
-        // result: ("任务完成", 101)
-        NSLog(@"结果: %@", result);
-        return nil;
-    });
+[[JTPromise all:@[promise, promise1]] then:^id _Nullable (NSArray *result) {
+    // result: ("Task completed", 101)
+    NSLog(@"Result: %@", result);
+    return nil;
+}];
 ```
 
 
