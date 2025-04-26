@@ -1,16 +1,16 @@
 PODS:
-  - JTPromise (1.1.7)
+  - JTPromiseKit (1.1.7)
 
 DEPENDENCIES:
-  - JTPromise (from `../`)
+  - JTPromiseKit (from `../`)
 
 EXTERNAL SOURCES:
-  JTPromise:
+  JTPromiseKit:
     :path: "../"
 
 SPEC CHECKSUMS:
-  JTPromise: 5c2877b1f025c62dbc895818ac1ddd4ea58be2f9
+  JTPromiseKit: ce833bacde04fc147f2bafa8202f8733ad9d0c11
 
-PODFILE CHECKSUM: 5696bd47ab524e8c8096899171cc775432851e80
+PODFILE CHECKSUM: 5a0afddb99d87ca335d5e5cfb1d595903f2767fa
 
 COCOAPODS: 1.15.2

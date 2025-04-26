@@ -4,13 +4,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "JTPromise",
+    name: "JTPromiseKit",
     platforms: [.iOS(.v11), .macOS(.v10_15)],
     products: [
-        .library(name: "JTPromise", targets: ["JTPromise"]),
+        .library(name: "JTPromiseKit", targets: ["JTPromiseKit"]),
     ],
     targets: [
-        .target(name: "JTPromise")
+        .target(name: "JTPromiseKit")
     ],
     swiftLanguageVersions: [.v5]
 )

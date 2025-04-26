@@ -7,7 +7,7 @@
 
 #import "Example-Swift.h"
 #import "ViewController.h"
-@import JTPromise;
+@import JTPromiseKit;
 
 @interface ViewController ()
 

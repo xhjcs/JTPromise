@@ -1,21 +1,21 @@
-# JTPromise
+# JTPromiseKit
 
 A lightweight, thread-safe Promise library for Swift and Objective-C, with a JavaScript-like API.<br/>[中文介绍](#中文介绍)
 
 ## Features
 
-- **JavaScript-style API**: The `JTPromise` API is fully aligned with JavaScript's `Promise` design, making it intuitive for developers familiar with JavaScript.
+- **JavaScript-style API**: The `JTPromiseKit` API is fully aligned with JavaScript's `Promise` design, making it intuitive for developers familiar with JavaScript.
 - **Thenable chaining**: Chain multiple asynchronous operations using `.then`, `.catch`, and `.finally` handlers.
 - **Promise combinators**: Supports `all`, `allSettled`, `any`, and `race` for managing multiple promises concurrently, mirroring JavaScript behavior.
 - **Thread safety**: Ensures safe state transitions across multiple threads.
 - **Objective-C compatibility**: Offers seamless integration with Objective-C projects.
 
 ## API Overview
-JTPromise follows the same API structure as JavaScript's Promise, with familiar methods such as .then(), .catch(), .finally(), and promise combinators like all(), allSettled(), any(), and race().
+JTPromiseKit follows the same API structure as JavaScript's Promise, with familiar methods such as .then(), .catch(), .finally(), and promise combinators like all(), allSettled(), any(), and race().
 
 ### Swift
 ```Swift
-import JTPromise
+import JTPromiseKit
 
 let promise = Promise<String> { resolve, reject in
     // Asynchronous task
@@ -90,7 +90,7 @@ Promise.all(promise, promise1)
 ```
 ### Objective-C
 ```objc
-@import JTPromise;
+@import JTPromiseKit;
 
 JTPromise *promise = [JTPromise promiseWithExecutor:^(void (^ _Nonnull resolve)(id _Nullable), void (^ _Nonnull reject)(NSError * _Nonnull)) {
         if (success) {
@@ -165,10 +165,10 @@ JTPromise *promise1 = [JTPromise promiseWithExecutor:^(void (^ _Nonnull resolve)
 
 ### CocoaPods
 
-[CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate JTPromise into your Xcode project using CocoaPods, specify it in your `Podfile`:
+[CocoaPods](https://cocoapods.org) is a dependency manager for Cocoa projects. For usage and installation instructions, visit their website. To integrate JTPromiseKit into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
-pod 'JTPromise'
+pod 'JTPromiseKit'
 ```
 
 ### Swift Package Manager
@@ -177,7 +177,7 @@ Add the following to your `Package.swift` file:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/xhjcs/JTPromise.git", from: "1.1.7")
+    .package(url: "https://github.com/xhjcs/JTPromiseKit.git", from: "1.1.7")
 ]
 ```
 
@@ -186,28 +186,28 @@ This library requires `iOS 11.0+` and `Xcode 14.0+`.
 
 License
 ==============
-JTPromise is provided under the MIT license. See LICENSE file for details.
+JTPromiseKit is provided under the MIT license. See LICENSE file for details.
 
 <br/><br/>
 ---
 ## 中文介绍
 
-JTPromise一个轻量级的线程安全的Promise库，适用于Swift和Objective-C，具有和JavaScript的Promise对象一致的API。
+JTPromiseKit一个轻量级的线程安全的Promise库，适用于Swift和Objective-C，具有和JavaScript的Promise对象一致的API。
 
 ## 特性
 
-- **JavaScript风格API**：`JTPromise` API完全符合JavaScript的`Promise`设计，对于熟悉`JavaScript`的开发者来说非常直观，非常适合同时具有`iOS`、`ReactNative`、`H5`、`鸿蒙`技术栈的开发者。
+- **JavaScript风格API**：`JTPromiseKit` API完全符合JavaScript的`Promise`设计，对于熟悉`JavaScript`的开发者来说非常直观，非常适合同时具有`iOS`、`ReactNative`、`H5`、`鸿蒙`技术栈的开发者。
 - **可链式调用**：使用`.then`、`.catch`和`.finally`处理程序链式调用多个异步操作。
 - **`Promise`组合器**：支持`all`、`allSettled`、`any`和`race`，用于并发管理多个`Promise`，和`JavaScript`中`Promise`行为一致。
 - **线程安全**：确保在多个线程之间安全地进行状态转换。
 - **`Objective-C`兼容性**：与`Objective-C`项目无缝集成。
 
 ## API 概述
-`JTPromise`遵循与`JavaScript`的`Promise`相同的API设计，如： `.then()`、`.catch()`、`.finally()` 和 `Promise` 组合方法，如： `all()`、`allSettled()`、`any()` 和 `race()`。
+`JTPromiseKit`遵循与`JavaScript`的`Promise`相同的API设计，如： `.then()`、`.catch()`、`.finally()` 和 `Promise` 组合方法，如： `all()`、`allSettled()`、`any()` 和 `race()`。
 
 ### Swift
 ```Swift
-import JTPromise
+import JTPromiseKit
 
 let promise = Promise<String> { resolve, reject in
     // 异步任务
@@ -282,7 +282,7 @@ Promise.all(promise, promise1)
 
 ### Objective-C
 ```objc
-@import JTPromise;
+@import JTPromiseKit;
 
 JTPromise *promise = [JTPromise promiseWithExecutor:^(void (^ _Nonnull resolve)(id _Nullable), void (^ _Nonnull reject)(NSError * _Nonnull)) {
         if (success) {
@@ -357,10 +357,10 @@ JTPromise *promise1 = [JTPromise promiseWithExecutor:^(void (^ _Nonnull resolve)
 
 ### CocoaPods
 
-[CocoaPods](https://cocoapods.org) 是一个用于Cocoa项目的依赖管理工具。有关用法和安装说明，请访问它的官方网站。要在Xcode项目中集成JTPromise，请在您的`Podfile`中添加:
+[CocoaPods](https://cocoapods.org) 是一个用于Cocoa项目的依赖管理工具。有关用法和安装说明，请访问它的官方网站。要在Xcode项目中集成JTPromiseKit，请在您的`Podfile`中添加:
 
 ```ruby
-pod 'JTPromise'
+pod 'JTPromiseKit'
 ```
 
 ### Swift Package Manager
@@ -369,7 +369,7 @@ pod 'JTPromise'
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/xhjcs/JTPromise.git", from: "1.1.7")
+    .package(url: "https://github.com/xhjcs/JTPromiseKit.git", from: "1.1.7")
 ]
 ```
 
@@ -378,4 +378,4 @@ This library requires `iOS 11.0+` and `Xcode 14.0+`.
 
 许可证
 ==============
-JTPromise is provided under the MIT license. See LICENSE file for details.
+JTPromiseKit is provided under the MIT license. See LICENSE file for details.

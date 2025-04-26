@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import JTPromise
+import JTPromiseKit
 
 @objcMembers
 class Playground: NSObject {

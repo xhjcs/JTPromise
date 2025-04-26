@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 
-  s.name         = "JTPromise"
+  s.name         = "JTPromiseKit"
   s.version      = "1.1.7"
   s.summary      = "A lightweight, thread-safe Promise library for Swift and Objective-C, with a JavaScript-like API."
 
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
                     a Swift or Objective-C project, Promise provides a small, flexible, and powerful tool to streamline your asynchronous code.
                    DESC
 
-  s.homepage     = "https://github.com/xhjcs/JTPromise.git"
+  s.homepage     = "https://github.com/xhjcs/JTPromiseKit.git"
 
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = "10.15"
 
 
-  s.source       = { :git => "https://github.com/xhjcs/JTPromise.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/xhjcs/JTPromiseKit.git", :tag => "#{s.version}" }
 
   s.source_files  = "Sources/#{s.name}/**/*"
 
