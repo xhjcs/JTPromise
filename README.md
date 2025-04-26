@@ -177,7 +177,7 @@ Add the following to your `Package.swift` file:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/xhjcs/JTPromiseKit.git", from: "1.1.7")
+    .package(url: "https://github.com/xhjcs/JTPromiseKit.git", from: "2.1.7")
 ]
 ```
 
@@ -369,7 +369,7 @@ pod 'JTPromiseKit'
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/xhjcs/JTPromiseKit.git", from: "1.1.7")
+    .package(url: "https://github.com/xhjcs/JTPromiseKit.git", from: "2.1.7")
 ]
 ```
 
