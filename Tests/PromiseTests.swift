@@ -5,7 +5,7 @@
 //  Created by xinghanjie on 2024/10/1.
 //
 
-@testable import JTPromise
+@testable import JTPromiseKit
 import XCTest
 
 final class PromiseTests: XCTestCase {
