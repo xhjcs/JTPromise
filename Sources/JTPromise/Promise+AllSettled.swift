@@ -12,6 +12,17 @@ public enum SettledResult<T> {
     case rejected(Error)
 }
 
+fileprivate extension SettledResult {
+    func `as`<U>(_ type: U.Type) -> SettledResult<U> {
+        switch self {
+        case .fulfilled(let result):
+            return .fulfilled(result as! U)
+        case .rejected(let error):
+            return .rejected(error)
+        }
+    }
+}
+
 public extension Promise {
     static func allSettled(_ promises: [Promise<Value>]) -> Promise<[SettledResult<Value>]> {
         guard !promises.isEmpty else {
@@ -32,8 +43,7 @@ public extension Promise {
                     resolve(results.compactMap { $0 })
                 }
             }
-            for i in 0 ..< count {
-                let promise = promises[i]
+            for (i, promise) in promises.enumerated() {
                 promise
                     .then { value in
                         handleSettledResult(.fulfilled(value), at: i)
@@ -45,87 +55,123 @@ public extension Promise {
         }
     }
     
-    static func allSettled<A, B>(_ promiseA: Promise<A>, _ promiseB: Promise<B>) -> Promise<(SettledResult<A>, SettledResult<B>)> {
-        let lock = Lock()
-        return Promise<(SettledResult<A>, SettledResult<B>)> { resolve, _ in
-            var resultA: SettledResult<A>?
-            var resultB: SettledResult<B>?
-
-            func handleResult(handler: () -> Void) {
-                lock.lock()
-                handler()
-                if let resultA = resultA, let resultB = resultB {
-                    lock.unlock()
-                    resolve((resultA, resultB))
-                } else {
-                    lock.unlock()
-                }
-            }
-
-            promiseA
-                .then { value in
-                    handleResult {
-                        resultA = SettledResult.fulfilled(value)
-                    }
-                }
-                .catch { error in
-                    handleResult {
-                        resultA = SettledResult.rejected(error)
-                    }
-                }
-
-            promiseB
-                .then { value in
-                    handleResult {
-                        resultB = SettledResult.fulfilled(value)
-                    }
-                }
-                .catch { error in
-                    handleResult {
-                        resultB = SettledResult.rejected(error)
-                    }
-                }
-        }
-    }
-
-    static func allSettled<A, B, C>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promiseC: Promise<C>) -> Promise<(SettledResult<A>, SettledResult<B>, SettledResult<C>)> {
-        allSettled(allSettled(promiseA, promiseB), promiseC)
-            .then { value in
-                guard case let .fulfilled(result) = value.0 else {
-                    throw PromiseError.impossible
-                }
-                return (result.0, result.1, value.1)
-            }
-    }
-
-    static func allSettled<A, B, C, D>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promiseC: Promise<C>, _ promiseD: Promise<D>) -> Promise<(SettledResult<A>, SettledResult<B>, SettledResult<C>,SettledResult<D>)> {
-        allSettled(allSettled(promiseA, promiseB), promiseC, promiseD)
-            .then { value in
-                guard case let .fulfilled(result) = value.0 else {
-                    throw PromiseError.impossible
-                }
-                return (result.0, result.1, value.1, value.2)
-            }
-    }
-
-    static func allSettled<A, B, C, D, E>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promiseC: Promise<C>, _ promiseD: Promise<D>, _ promiseE: Promise<E>) -> Promise<(SettledResult<A>, SettledResult<B>, SettledResult<C>, SettledResult<D>, SettledResult<E>)> {
-        allSettled(allSettled(promiseA, promiseB), promiseC, promiseD, promiseE)
-            .then { value in
-                guard case let .fulfilled(result) = value.0 else {
-                    throw PromiseError.impossible
-                }
-                return (result.0, result.1, value.1, value.2, value.3)
-            }
-    }
-
-    static func allSettled<A, B, C, D, E, F>(_ promiseA: Promise<A>, _ promiseB: Promise<B>, _ promiseC: Promise<C>, _ promiseD: Promise<D>, _ promiseE: Promise<E>, _ promiseF: Promise<F>) -> Promise<(SettledResult<A>, SettledResult<B>, SettledResult<C>, SettledResult<D>, SettledResult<E>, SettledResult<F>)> {
-        allSettled(allSettled(promiseA, promiseB), promiseC, promiseD, promiseE, promiseF)
-            .then { value in
-                guard case let .fulfilled(result) = value.0 else {
-                    throw PromiseError.impossible
-                }
-                return (result.0, result.1, value.1, value.2, value.3, value.4)
-            }
+    static func allSettled<A, B>(
+        _ promiseA: Promise<A>,
+        _ promiseB: Promise<B>
+    ) -> Promise<(
+        SettledResult<A>,
+        SettledResult<B>
+    )> {
+        Promise<Any>.allSettled([
+            promiseA.asAny(),
+            promiseB.asAny()
+        ]).then {(
+            $0[0].as(A.self),
+            $0[1].as(B.self)
+        )}
     }
     
+    static func allSettled<A, B, C>(
+        _ promiseA: Promise<A>,
+        _ promiseB: Promise<B>,
+        _ promiseC: Promise<C>
+    ) -> Promise<(
+        SettledResult<A>,
+        SettledResult<B>,
+        SettledResult<C>
+    )> {
+        Promise<Any>.allSettled([
+            promiseA.asAny(),
+            promiseB.asAny(),
+            promiseC.asAny()
+        ]).then {(
+            $0[0].as(A.self),
+            $0[1].as(B.self),
+            $0[2].as(C.self)
+        )}
+    }
+    
+    static func allSettled<A, B, C, D>(
+        _ promiseA: Promise<A>,
+        _ promiseB: Promise<B>,
+        _ promiseC: Promise<C>,
+        _ promiseD: Promise<D>
+    ) -> Promise<(
+        SettledResult<A>,
+        SettledResult<B>,
+        SettledResult<C>,
+        SettledResult<D>
+    )> {
+        Promise<Any>.allSettled([
+            promiseA.asAny(),
+            promiseB.asAny(),
+            promiseC.asAny(),
+            promiseD.asAny()
+        ]).then {(
+            $0[0].as(A.self),
+            $0[1].as(B.self),
+            $0[2].as(C.self),
+            $0[3].as(D.self)
+        )}
+    }
+    
+    static func allSettled<A, B, C, D, E>(
+        _ promiseA: Promise<A>,
+        _ promiseB: Promise<B>,
+        _ promiseC: Promise<C>,
+        _ promiseD: Promise<D>,
+        _ promiseE: Promise<E>
+    ) -> Promise<(
+        SettledResult<A>,
+        SettledResult<B>,
+        SettledResult<C>,
+        SettledResult<D>,
+        SettledResult<E>
+    )> {
+        Promise<Any>.allSettled([
+            promiseA.asAny(),
+            promiseB.asAny(),
+            promiseC.asAny(),
+            promiseD.asAny(),
+            promiseE.asAny()
+        ]).then {(
+            $0[0].as(A.self),
+            $0[1].as(B.self),
+            $0[2].as(C.self),
+            $0[3].as(D.self),
+            $0[4].as(E.self)
+        )}
+    }
+    
+    static func allSettled<A, B, C, D, E, F>(
+        _ promiseA: Promise<A>,
+        _ promiseB: Promise<B>,
+        _ promiseC: Promise<C>,
+        _ promiseD: Promise<D>,
+        _ promiseE: Promise<E>,
+        _ promiseF: Promise<F>
+    ) -> Promise<(
+        SettledResult<A>,
+        SettledResult<B>,
+        SettledResult<C>,
+        SettledResult<D>,
+        SettledResult<E>,
+        SettledResult<F>
+    )> {
+        Promise<Any>.allSettled([
+            promiseA.asAny(),
+            promiseB.asAny(),
+            promiseC.asAny(),
+            promiseD.asAny(),
+            promiseE.asAny(),
+            promiseF.asAny()
+        ]).then {(
+            $0[0].as(A.self),
+            $0[1].as(B.self),
+            $0[2].as(C.self),
+            $0[3].as(D.self),
+            $0[4].as(E.self),
+            $0[5].as(F.self)
+        )}
+    }
 }

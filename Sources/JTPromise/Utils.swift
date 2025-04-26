@@ -24,3 +24,9 @@ final class Lock {
         os_unfair_lock_unlock(&unfairLock)
     }
 }
+
+extension Promise {
+    func asAny() -> Promise<Any> {
+        return self.then { $0 as Any }
+    }
+}
