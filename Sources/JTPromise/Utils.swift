@@ -9,9 +9,10 @@ import Foundation
 
 enum PromiseError: Int, Error {
     case emptyPromises = 1001
+    case impossible = 1002
 }
 
-final class PromiseLock {
+final class Lock {
     
     private var unfairLock = os_unfair_lock()
     

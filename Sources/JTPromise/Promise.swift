@@ -18,7 +18,7 @@ public final class Promise<Value> {
     private var fulfillHandlers: [(Value) -> Void] = []
     private var rejectHandlers: [(Error) -> Void] = []
 
-    private let lock = PromiseLock()
+    private let lock = Lock()
 
     public convenience init(resolve value: Value) {
         self.init { resolve, _ in

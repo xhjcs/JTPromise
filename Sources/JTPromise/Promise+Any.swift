@@ -13,7 +13,7 @@ public extension Promise {
             return Promise(reject: PromiseError.emptyPromises)
         }
         var remaining = promises.count
-        let lock = PromiseLock()
+        let lock = Lock()
         return Promise { resolve, reject in
             for promise in promises {
                 promise

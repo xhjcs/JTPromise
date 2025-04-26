@@ -21,6 +21,8 @@ extension PromiseError: CustomNSError {
         switch self {
         case .emptyPromises:
             userInfo[NSLocalizedDescriptionKey] = "The array of promises is empty."
+        case .impossible:
+            userInfo[NSLocalizedDescriptionKey] = "It's impossible."
         }
         return userInfo
     }

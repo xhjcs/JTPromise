@@ -111,7 +111,7 @@ final class PromiseAllSettledTests: XCTestCase {
         ]
 
         // 使用 `allSettled` 处理 Promise 数组
-        let allSettledPromise: Promise<[PromiseSettledResult<Int>]> = Promise.allSettled(promises)
+        let allSettledPromise: Promise<[SettledResult<Int>]> = Promise.allSettled(promises)
 
         allSettledPromise.then { results in
             XCTAssertEqual(results.count, 4, "All promises in the array should be settled")
@@ -158,7 +158,7 @@ final class PromiseAllSettledTests: XCTestCase {
 
         let promises: [Promise<Int>] = []
 
-        let allSettledPromise: Promise<[PromiseSettledResult<Int>]> = Promise.allSettled(promises)
+        let allSettledPromise: Promise<[SettledResult<Int>]> = Promise.allSettled(promises)
 
         allSettledPromise.then { results in
             XCTAssertEqual(results.count, 0, "The result array should be empty when the input promises array is empty")
@@ -192,7 +192,7 @@ final class PromiseAllSettledTests: XCTestCase {
             },
         ]
 
-        let allSettledPromise: Promise<[PromiseSettledResult<Int>]> = Promise.allSettled(promises)
+        let allSettledPromise: Promise<[SettledResult<Int>]> = Promise.allSettled(promises)
 
         allSettledPromise.then { results in
             XCTAssertEqual(results.count, 3, "All promises in the array should be settled")
@@ -238,7 +238,7 @@ final class PromiseAllSettledTests: XCTestCase {
             },
         ]
 
-        let allSettledPromise: Promise<[PromiseSettledResult<Int>]> = Promise.allSettled(promises)
+        let allSettledPromise: Promise<[SettledResult<Int>]> = Promise.allSettled(promises)
 
         allSettledPromise.then { results in
             XCTAssertEqual(results.count, 3, "All promises in the array should be settled")
