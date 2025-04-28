@@ -13,13 +13,12 @@ enum PromiseError: Int, Error {
 }
 
 final class Lock {
-    
     private var unfairLock = os_unfair_lock()
-    
+
     func lock() {
         os_unfair_lock_lock(&unfairLock)
     }
-    
+
     func unlock() {
         os_unfair_lock_unlock(&unfairLock)
     }
@@ -27,6 +26,6 @@ final class Lock {
 
 extension Promise {
     func asAny() -> Promise<Any> {
-        return self.then { $0 as Any }
+        return then { $0 as Any }
     }
 }

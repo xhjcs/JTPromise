@@ -227,7 +227,7 @@ public final class Promise<Value> {
             }
         }
     }
-    
+
     private func clearInvalidHandlers() {
         lock.lock()
         fulfillHandlers.removeAll()
