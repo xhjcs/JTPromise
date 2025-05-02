@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "JTPromiseKit"
-  s.version      = "2.1.7"
+  s.version      = "2.2.0"
   s.summary      = "A lightweight, thread-safe Promise library for Swift and Objective-C, with a JavaScript-like API."
 
   s.description  = <<-DESC
