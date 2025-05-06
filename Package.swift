@@ -5,9 +5,15 @@ import PackageDescription
 
 let package = Package(
     name: "JTPromiseKit",
-    platforms: [.iOS(.v11), .macOS(.v10_15)],
+    platforms: [
+        .iOS(.v11),
+        .macOS(.v10_15)
+    ],
     products: [
-        .library(name: "JTPromiseKit", targets: ["JTPromiseKit"]),
+        .library(
+            name: "JTPromiseKit",
+            targets: ["JTPromiseKit"]
+        ),
     ],
     targets: [
         .target(name: "JTPromiseKit")
